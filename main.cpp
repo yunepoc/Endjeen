@@ -1,13 +1,9 @@
-#include <iostream>
-#include <Window.hpp>
+#include <Game.hpp>
 
 int main() {
-  ej::Window window(800, 600, "Endjeen");
-
-  while (window.isOpen()) {
-    window.swapBuffers();
-    window.pollEvents();
-  }
-
+  ej::Game game;
+  game.init();
+  game.run();
+  game.stop();
   return 0;
 }

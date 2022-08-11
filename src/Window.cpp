@@ -14,6 +14,7 @@ Window::Window(unsigned width, unsigned height, std::string title) {
     throw 0;
   handle = static_cast<void*>(window);
   glfwMakeContextCurrent(window);
+  glfwSwapInterval(0);
 }
 
 Window::~Window() {
