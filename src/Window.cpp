@@ -20,7 +20,14 @@ Window::Window(unsigned width, unsigned height, std::string title) {
 Window::~Window() {
   glfwTerminate();
 }
-    
+
+glm::uvec2 Window::getSize() {
+  int width;
+  int height;
+  glfwGetWindowSize(WIN, &width, &height);
+  return {width, height};
+}
+
 bool Window::isOpen() { return !glfwWindowShouldClose(WIN); }
 void Window::pollEvents() { glfwPollEvents(); }
 void Window::swapBuffers() { glfwSwapBuffers(WIN); }

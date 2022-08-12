@@ -14,8 +14,9 @@ namespace ej {
     ResShader &shader = resourceMgr.get<ResShader>("red");
 
     while (window->isOpen()) {
+      camera.update();
       renderer.renderBefore();
-      renderer.render(triangle, shader);
+      renderer.render(triangle, shader, camera);
       window->swapBuffers();
       window->pollEvents();
     }

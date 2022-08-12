@@ -9,6 +9,8 @@ file(
   src/*.cpp
 )
 
+set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake_modules" ${CMAKE_MODULE_PATH})
+
 include_directories(include)
 add_executable(Endjeen ${source})
 
@@ -20,6 +22,10 @@ target_link_libraries(Endjeen ${GLEW_LIBRARIES})
 # GLFW
 find_package(glfw3 3.3 REQUIRED)
 target_link_libraries(Endjeen glfw)
+
+# GLM
+find_package(GLM REQUIRED)
+include_directories(${GLM_INCLUDE_DIRS})
 
 # OpenGL
 find_package(OpenGL REQUIRED)

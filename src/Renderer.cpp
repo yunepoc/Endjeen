@@ -2,6 +2,7 @@
 
 #include <GL/glew.h>
 #include <GL/gl.h>
+#include <glm/gtc/type_ptr.hpp>
 #include <iostream>
 #include <Resource.hpp>
 
@@ -10,15 +11,17 @@ namespace ej {
 void Renderer::createShader(unsigned int &handle) {
   const char *vertexSrc = "#version 330 core\n"
       "layout (location = 0) in vec3 aPos;\n"
+      "uniform mat4 matrixView;\n"
+      "uniform mat4 matrixProjection;\n"
       "void main()\n"
       "{\n"
-      "   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
+      "   gl_Position = matrixProjection * matrixView * vec4(aPos, 1.0f);\n"
       "}\0";
   const char *fragmentSrc = "#version 330 core\n"
       "out vec4 FragColor;\n"
       "void main()\n"
       "{\n"
-      "   FragColor = vec4(.8f, 0.5f, 0.5f, 1.0f);\n"
+      "   FragColor = vec4(0.5f, 0.6f, 0.5f, 1.0f);\n"
       "}\n\0";
   // vertex shader
   unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
@@ -58,9 +61,13 @@ void Renderer::createShader(unsigned int &handle) {
 
 void Renderer::createRenderable(unsigned int &vao, unsigned int &vbo) {
   const float vertices[] = {
-          -0.5f, -0.5f, 0.0f, // left
-           0.5f, -0.5f, 0.0f, // right
-           0.0f,  0.5f, 0.0f  // top
+    -0.5f, 0.0, -0.5f, // top left
+     0.5f, 0.0, -0.5f, // top right
+     0.5f, 0.0,  0.5f, // bot right
+
+    -0.5f, 0.0, -0.5f, // top left
+     0.5f, 0.0,  0.5f, // bot right
+    -0.5f, 0.0,  0.5f, // bot left
   };
 
   glGenVertexArrays(1, &vao);
@@ -90,10 +97,22 @@ void Renderer::load() {
   glClearColor(0.605,0.664,0.745,1.0);
 }
 
-void Renderer::render(ResRenderable &renderable, ResShader &shader) {
+void Renderer::render(ResRenderable &renderable, ResShader &shader, Camera &camera) {
+
   glUseProgram(shader.handle);
+
+  // Set view matrix uniform
+  glm::mat4 matrixView = camera.getViewMatrix();
+  GLint loc = glGetUniformLocation(shader.handle, "matrixView");
+  glUniformMatrix4fv(loc, 1, GL_FALSE, glm::value_ptr(matrixView));
+
+  // Set projection matrix uniform
+  glm::mat4 matrixProjection = camera.getProjectionMatrix();
+  loc = glGetUniformLocation(shader.handle, "matrixProjection");
+  glUniformMatrix4fv(loc, 1, GL_FALSE, glm::value_ptr(matrixProjection));
+
   glBindVertexArray(renderable.vao);
-  glDrawArrays(GL_TRIANGLES, 0, 3);
+  glDrawArrays(GL_TRIANGLES, 0, 6);
 }
 
 void Renderer::renderBefore() {
