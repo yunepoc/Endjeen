@@ -9,55 +9,42 @@
 
 namespace ej {
 
-void Renderer::createShader(unsigned int &handle) {
-  const char *vertexSrc = "#version 330 core\n"
-      "layout (location = 0) in vec3 aPos;\n"
-      "uniform mat4 matrixView;\n"
-      "uniform mat4 matrixProjection;\n"
-      "void main()\n"
-      "{\n"
-      "   gl_Position = matrixProjection * matrixView * vec4(aPos, 1.0f);\n"
-      "}\0";
-  const char *fragmentSrc = "#version 330 core\n"
-      "out vec4 FragColor;\n"
-      "void main()\n"
-      "{\n"
-      "   FragColor = vec4(0.5f, 0.6f, 0.5f, 1.0f);\n"
-      "}\n\0";
-  // vertex shader
-  unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
-  glShaderSource(vertexShader, 1, &vertexSrc, NULL);
-  glCompileShader(vertexShader);
+void Renderer::compileShader(std::string source, ResShader &shader, bool vertex) {
+  unsigned int handle;
+  if (vertex)
+    handle = glCreateShader(GL_VERTEX_SHADER);
+  else
+    handle = glCreateShader(GL_FRAGMENT_SHADER);
+  const char* csource = source.c_str();
+  glShaderSource(handle, 1, &csource, NULL);
+  glCompileShader(handle);
   int success;
   char infoLog[512];
-  glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
+  glGetShaderiv(handle, GL_COMPILE_STATUS, &success);
   if (!success) {
-      glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
+      glGetShaderInfoLog(handle, 512, NULL, infoLog);
       WARN("Cannot compile vertex shader: " << infoLog);
+      // TODO: we could fallback to a default shader here
   }
-  // fragment shader
-  unsigned int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-  glShaderSource(fragmentShader, 1, &fragmentSrc, NULL);
-  glCompileShader(fragmentShader);
-  glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
+  shader.handle = handle;
+}
+
+void Renderer::linkShaders(ResShader &vertex, ResShader &fragment, ResShader &pipeline) {
+  unsigned int handle = glCreateProgram();
+  glAttachShader(handle, vertex.handle);
+  glAttachShader(handle, fragment.handle);
+  glLinkProgram(handle);
+  int success;
+  char infoLog[512];
+  glGetProgramiv(handle, GL_LINK_STATUS, &success);
   if (!success) {
-      glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
-      WARN("Cannot compile fragment shader: " << infoLog);
+      glGetProgramInfoLog(handle, 512, NULL, infoLog);
+      WARN("Canot link shaders: " << infoLog);
+      // TODO: we could fallback to a default shader here
   }
-  // link shaders
-  unsigned int shaderProgram = glCreateProgram();
-  glAttachShader(shaderProgram, vertexShader);
-  glAttachShader(shaderProgram, fragmentShader);
-  glLinkProgram(shaderProgram);
-  // check for linking errors
-  glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
-  if (!success) {
-      glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
-      std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog << std::endl;
-  }
-  glDeleteShader(vertexShader);
-  glDeleteShader(fragmentShader);
-  handle = shaderProgram;
+  glDeleteShader(vertex.handle);
+  glDeleteShader(fragment.handle);
+  pipeline.handle = handle;
 }
 
 void Renderer::createRenderable(unsigned int &vao, unsigned int &vbo) {

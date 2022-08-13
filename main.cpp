@@ -5,7 +5,7 @@ int main() {
 
   LOG("Sarting game...");
   ej::Game& game = ej::Game::instance();
-  game.init();
+  game.init("../../../GameContent/");
   game.run();
   game.stop();
 

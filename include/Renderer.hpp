@@ -13,7 +13,8 @@ class Renderer: public System {
     void renderBefore();
     virtual void shutdown();
     static void createRenderable(unsigned int &vao, unsigned int &vbo);
-    static void createShader(unsigned int &handle);
+    static void compileShader(std::string source, ResShader &shader, bool vertex);
+    static void linkShaders(ResShader &vertex, ResShader &fragment, ResShader &pipeline);
 };
 
 }

@@ -20,7 +20,8 @@ class Game {
     }
 
     Window& getWindow() { return *window; }
-    void init();
+    ResourceManager& getResourceMgr() { return resourceMgr; }
+    void init(std::string root);
     void run();
     void stop();
   private:

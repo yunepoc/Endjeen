@@ -8,17 +8,17 @@
 namespace ej {
 
 struct Resource {
-  virtual void load() = 0;
+  virtual void load(std::string root, std::string key) = 0;
 };
 
 struct ResRenderable: public Resource {
-  void load();
+  void load(std::string root, std::string key);
   unsigned int vao;
   unsigned int vbo;
 };
 
 struct ResShader: public Resource {
-  void load();
+  void load(std::string root, std::string key);
   unsigned int handle;
 };
 
@@ -40,7 +40,7 @@ class ResourceManager {
       LOG("Loading resource \"" << key << "\"");
       Res* res = new Res();
       inCache.reset(res);
-      res->load();
+      res->load(root, key);
       return *res;
     }
   private:
