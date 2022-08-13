@@ -1,5 +1,6 @@
 #include <Input.hpp>
 
+#include <Debug.hpp>
 #include <Game.hpp>
 #include <GLFW/glfw3.h>
 
@@ -11,7 +12,7 @@ static int keyToGLFWKey(Input::Key key) {
     case Input::Key::D: return GLFW_KEY_D;
     case Input::Key::S: return GLFW_KEY_S;
     case Input::Key::W: return GLFW_KEY_W;
-    default: throw 0;
+    default: ERROR("Input: Unknown key");
   }
 }
 

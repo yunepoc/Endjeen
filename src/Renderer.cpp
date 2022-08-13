@@ -1,5 +1,6 @@
 #include <Renderer.hpp>
 
+#include <Debug.hpp>
 #include <GL/glew.h>
 #include <GL/gl.h>
 #include <glm/gtc/type_ptr.hpp>
@@ -32,7 +33,7 @@ void Renderer::createShader(unsigned int &handle) {
   glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
   if (!success) {
       glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
-      std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
+      WARN("Cannot compile vertex shader: " << infoLog);
   }
   // fragment shader
   unsigned int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
@@ -41,7 +42,7 @@ void Renderer::createShader(unsigned int &handle) {
   glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
   if (!success) {
       glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
-      std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog << std::endl;
+      WARN("Cannot compile fragment shader: " << infoLog);
   }
   // link shaders
   unsigned int shaderProgram = glCreateProgram();
@@ -91,9 +92,8 @@ void Renderer::createRenderable(unsigned int &vao, unsigned int &vbo) {
 
 void Renderer::load() {
   glewExperimental = GL_TRUE;
-  if (glewInit() != GLEW_OK) {
-    throw 0;
-  }
+  if (glewInit() != GLEW_OK)
+    ERROR("Cannot initialize renderer");
   glClearColor(0.605,0.664,0.745,1.0);
 }
 

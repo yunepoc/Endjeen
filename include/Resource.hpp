@@ -1,5 +1,6 @@
 #pragma once
 
+#include <Debug.hpp>
 #include <memory>
 #include <string>
 #include <unordered_map>
@@ -27,15 +28,16 @@ class ResourceManager {
     template<typename Res>
     Res& get(std::string key) {
       if (root == "")
-        throw 0;
+        ERROR("ResourceManager has not been initialized");
       std::unique_ptr<Resource> &inCache = cache[key];
       if (inCache) {
         Resource* res = inCache.get();
         Res* result = dynamic_cast<Res*>(res);
         if (result)
           return *result;
-        throw 0;
+        ERROR("Unexpected resource type in cache for resource \"" << key << "\"");
       }
+      LOG("Loading resource \"" << key << "\"");
       Res* res = new Res();
       inCache.reset(res);
       res->load();
