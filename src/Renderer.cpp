@@ -47,33 +47,19 @@ void Renderer::linkShaders(ResShader &vertex, ResShader &fragment, ResShader &pi
   pipeline.handle = handle;
 }
 
-void Renderer::createRenderable(unsigned int &vao, unsigned int &vbo) {
-  const float vertices[] = {
-    -0.5f, 0.0, -0.5f, // top left
-     0.5f, 0.0, -0.5f, // top right
-     0.5f, 0.0,  0.5f, // bot right
+void Renderer::createRenderable(std::vector<float> vertices, ResRenderable &renderable) {
+  renderable.vertexCount = vertices.size() / 3;
+  glGenVertexArrays(1, &renderable.vao);
+  glGenBuffers(1, &renderable.vbo);
+  glBindVertexArray(renderable.vao);
 
-    -0.5f, 0.0, -0.5f, // top left
-     0.5f, 0.0,  0.5f, // bot right
-    -0.5f, 0.0,  0.5f, // bot left
-  };
-
-  glGenVertexArrays(1, &vao);
-  glGenBuffers(1, &vbo);
-  // bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
-  glBindVertexArray(vao);
-
-  glBindBuffer(GL_ARRAY_BUFFER, vbo);
-  glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+  glBindBuffer(GL_ARRAY_BUFFER, renderable.vbo);
+  glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), vertices.data(), GL_STATIC_DRAW);
 
   glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+
   glEnableVertexAttribArray(0);
-
-  // note that this is allowed, the call to glVertexAttribPointer registered VBO as the vertex attribute's bound vertex buffer object so afterwards we can safely unbind
   glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-  // You can unbind the VAO afterwards so other VAO calls won't accidentally modify this VAO, but this rarely happens. Modifying other
-  // VAOs requires a call to glBindVertexArray anyways so we generally don't unbind VAOs (nor VBOs) when it's not directly necessary.
   glBindVertexArray(0);
 }
 
@@ -82,6 +68,7 @@ void Renderer::load() {
   if (glewInit() != GLEW_OK)
     ERROR("Cannot initialize renderer");
   glClearColor(0.605,0.664,0.745,1.0);
+  glLineWidth(5.0);
 }
 
 void Renderer::render(ResRenderable &renderable, ResShader &shader, Camera &camera) {
@@ -99,11 +86,18 @@ void Renderer::render(ResRenderable &renderable, ResShader &shader, Camera &came
   glUniformMatrix4fv(loc, 1, GL_FALSE, glm::value_ptr(matrixProjection));
 
   glBindVertexArray(renderable.vao);
-  glDrawArrays(GL_TRIANGLES, 0, 6);
+  glDrawArrays(GL_TRIANGLES, 0, renderable.vertexCount);
 }
 
 void Renderer::renderBefore() {
   glClear(GL_COLOR_BUFFER_BIT);
+}
+
+void Renderer::setWireframeMode(bool enabled) {
+  if (enabled)
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+  else
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
 void Renderer::shutdown() {

@@ -15,6 +15,7 @@ struct ResRenderable: public Resource {
   void load(std::string root, std::string key);
   unsigned int vao;
   unsigned int vbo;
+  unsigned int vertexCount;
 };
 
 struct ResShader: public Resource {

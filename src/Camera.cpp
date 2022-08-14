@@ -13,7 +13,7 @@ Camera::Camera() {
 glm::mat4 Camera::getProjectionMatrix() {
   float fov = 45.0f;
   float near = 1.0f;
-  float far = 100.0f;
+  float far = 500.0f;
   glm::uvec2 size = Game::instance().getWindow().getSize();
   float ratio = (float)size.x / (float)size.y;
   glm::mat4 matrixProjection = glm::perspective(glm::radians(fov), (float)(ratio), near, far);

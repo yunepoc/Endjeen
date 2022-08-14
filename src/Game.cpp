@@ -13,10 +13,13 @@ namespace ej {
     ResRenderable &triangle = resourceMgr.get<ResRenderable>("triangle");
     ResShader &shader = resourceMgr.get<ResShader>("default.shader");
 
+    ResRenderable &plane = resourceMgr.get<ResRenderable>("plane4x8x1.std");
+
+    renderer.setWireframeMode(true);
     while (window->isOpen()) {
       camera.update();
       renderer.renderBefore();
-      renderer.render(triangle, shader, camera);
+      renderer.render(plane, shader, camera);
       window->swapBuffers();
       window->pollEvents();
     }

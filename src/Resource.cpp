@@ -4,12 +4,75 @@
 #include <filesystem>
 #include <fstream>
 #include <Game.hpp>
+#include <regex>
 #include <Renderer.hpp>
 
 namespace ej {
 
 void ResRenderable::load(std::string root, std::string key) {
-  Renderer::createRenderable(vao, vbo);
+  // The key represents an internal std object
+  if (key.ends_with(".std")) {
+    // Try to match plane: planeWxHx1.std. This is a WxH plane built with triangles
+    // of size 1.
+    std::regex regex(R"(plane(\d+)x(\d+)x1.std)");
+    std::smatch match;
+    if(std::regex_search(key, match, regex) && match.size() == 3) {
+      int width = std::stoi(match[1]);
+      int height = std::stoi(match[2]);
+      // Generate plane triangles
+      std::vector<float> vertices;
+      std::vector<glm::vec3> square = {
+        {0.0, 0.0, -1.0}, // top left
+        {1.0, 0.0, -1.0}, // top right
+        {1.0, 0.0,  0.0}, // bot right
+
+        {0.0, 0.0, -1.0}, // top left
+        {1.0, 0.0,  0.0}, // bot right
+        {0.0, 0.0,  0.0}, // bot left
+      };
+      for (int x=0; x<width; x++)
+        for (int y=0; y<height; y++) {
+          for (auto p: square) {
+            p.x += x;
+            p.z -= y;
+            vertices.push_back(p.x);
+            vertices.push_back(p.y);
+            vertices.push_back(p.z);
+          }
+        }
+      Renderer::createRenderable(vertices, *this);
+      return;
+    }
+    // Try to match plane: planeWxH.std. This is WxH plane built with two triangles.
+    regex = (R"(plane(\d+)x(\d+).std)");
+    if(std::regex_search(key, match, regex) && match.size() == 3) {
+      int width = std::stoi(match[1]);
+      int height = std::stoi(match[2]);
+      // Generate plane triangles
+      std::vector<float> vertices;
+      vertices.push_back(0.0f); vertices.push_back(0.0f); vertices.push_back(-height);
+      vertices.push_back(width); vertices.push_back(0.0f); vertices.push_back(-height);
+      vertices.push_back(width); vertices.push_back(0.0f); vertices.push_back(0.0f);
+
+      vertices.push_back(0.0f); vertices.push_back(0.0f); vertices.push_back(-height);
+      vertices.push_back(width); vertices.push_back(0.0f); vertices.push_back(0.0f);
+      vertices.push_back(0.0f); vertices.push_back(0.0f); vertices.push_back(0.0f);
+
+      Renderer::createRenderable(vertices, *this);
+      return;
+    }
+    ERROR("Invalid std renderable key: \"" << key << "\"");
+  }
+  std::vector<float> vertices = {
+    -0.5f, 0.0, -0.5f, // top left
+     0.5f, 0.0, -0.5f, // top right
+     0.5f, 0.0,  0.5f, // bot right
+
+    -0.5f, 0.0, -0.5f, // top left
+     0.5f, 0.0,  0.5f, // bot right
+    -0.5f, 0.0,  0.5f, // bot left
+  };
+  Renderer::createRenderable(vertices, *this);
 }
 
 void ResShader::load(std::string root, std::string key) {
