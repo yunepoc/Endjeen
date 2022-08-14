@@ -6,6 +6,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <iostream>
 #include <Resource.hpp>
+#include <Transform.hpp>
 
 namespace ej {
 
@@ -71,13 +72,18 @@ void Renderer::load() {
   glLineWidth(5.0);
 }
 
-void Renderer::render(ResRenderable &renderable, ResShader &shader, Camera &camera) {
+void Renderer::render(ResRenderable &renderable, ResShader &shader, Transform& transform, Camera &camera) {
 
   glUseProgram(shader.handle);
 
+  // Set model matrix uniform
+  glm::mat4 matrixModel = transform.getModelMatrix();
+  GLint loc = glGetUniformLocation(shader.handle, "matrixModel");
+  glUniformMatrix4fv(loc, 1, GL_FALSE, glm::value_ptr(matrixModel));
+
   // Set view matrix uniform
   glm::mat4 matrixView = camera.getViewMatrix();
-  GLint loc = glGetUniformLocation(shader.handle, "matrixView");
+  loc = glGetUniformLocation(shader.handle, "matrixView");
   glUniformMatrix4fv(loc, 1, GL_FALSE, glm::value_ptr(matrixView));
 
   // Set projection matrix uniform

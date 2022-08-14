@@ -7,7 +7,8 @@ class Input {
   public:
     enum class Key {
       // NOTE: Need to add a conversion entry in Input.cpp when adding a key here.
-      A, D, S, W
+      A, D, S, W,
+      Left, Right, Up, Down
     };
     static bool keyDown(Key key);
 };

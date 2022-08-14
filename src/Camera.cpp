@@ -26,15 +26,15 @@ glm::mat4 Camera::getViewMatrix() {
 }
 
 void Camera::update() {
-  float speed = 0.0003;
+  float speed = 0.001;
   glm::vec2 translation(0.0f);
-  if (Input::keyDown(Input::Key::A))
+  if (Input::keyDown(Input::Key::A) || Input::keyDown(Input::Key::Left))
     translation.x -= 1.0;
-  if (Input::keyDown(Input::Key::D))
+  if (Input::keyDown(Input::Key::D) || Input::keyDown(Input::Key::Right))
     translation.x += 1.0;
-  if (Input::keyDown(Input::Key::W))
+  if (Input::keyDown(Input::Key::W) || Input::keyDown(Input::Key::Up))
     translation.y -= 1.0;
-  if (Input::keyDown(Input::Key::S))
+  if (Input::keyDown(Input::Key::S) || Input::keyDown(Input::Key::Down))
     translation.y += 1.0;
   if (translation.x != 0.0 || translation.y != 0.0)
     translation = glm::normalize(translation);

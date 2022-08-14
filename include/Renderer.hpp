@@ -7,10 +7,11 @@
 
 namespace ej {
 
+class Transform;
 class Renderer: public System {
   public:
     virtual void load();
-    void render(ResRenderable& renderable, ResShader& shader, Camera &camera);
+    void render(ResRenderable& renderable, ResShader& shader, Transform& transform, Camera &camera);
     void renderBefore();
     void setWireframeMode(bool enabled);
     virtual void shutdown();

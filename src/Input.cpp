@@ -12,6 +12,10 @@ static int keyToGLFWKey(Input::Key key) {
     case Input::Key::D: return GLFW_KEY_D;
     case Input::Key::S: return GLFW_KEY_S;
     case Input::Key::W: return GLFW_KEY_W;
+    case Input::Key::Left: return GLFW_KEY_LEFT;
+    case Input::Key::Right: return GLFW_KEY_RIGHT;
+    case Input::Key::Up: return GLFW_KEY_UP;
+    case Input::Key::Down: return GLFW_KEY_DOWN;
     default: ERROR("Input: Unknown key");
   }
 }
