@@ -4,7 +4,7 @@
 #include <GL/glew.h>
 #include <GL/gl.h>
 #include <glm/gtc/type_ptr.hpp>
-#include <iostream>
+#include <Material.hpp>
 #include <Resource.hpp>
 #include <Transform.hpp>
 
@@ -48,31 +48,56 @@ void Renderer::linkShaders(ResShader &vertex, ResShader &fragment, ResShader &pi
   pipeline.handle = handle;
 }
 
-void Renderer::createRenderable(std::vector<float> vertices, ResRenderable &renderable) {
-  renderable.vertexCount = vertices.size() / 3;
+void Renderer::createRenderable(std::vector<float> &data, std::vector<unsigned> &indices, ResRenderable &renderable) {
+  renderable.vertexCount = data.size() / 8; // 3 position + 3 normal + 2 texcoords
+  renderable.indiceCount = indices.size();
   glGenVertexArrays(1, &renderable.vao);
   glGenBuffers(1, &renderable.vbo);
+  glGenBuffers(1, &renderable.ebo);
   glBindVertexArray(renderable.vao);
 
   glBindBuffer(GL_ARRAY_BUFFER, renderable.vbo);
-  glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), vertices.data(), GL_STATIC_DRAW);
+  glBufferData(GL_ARRAY_BUFFER, data.size() * sizeof(float), data.data(), GL_STATIC_DRAW);
 
-  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, renderable.ebo);
+  glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned)*indices.size(), indices.data(), GL_STATIC_DRAW);
 
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
   glEnableVertexAttribArray(0);
+
+  glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+  glEnableVertexAttribArray(1);
+
+  glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+  glEnableVertexAttribArray(2);
+
   glBindBuffer(GL_ARRAY_BUFFER, 0);
   glBindVertexArray(0);
+}
+
+void Renderer::createTexture(unsigned char* data, unsigned width, unsigned height, ResTexture &texture) {
+  glGenTextures(1, &texture.handle);
+  glBindTexture(GL_TEXTURE_2D, texture.handle);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+  glGenerateMipmap(GL_TEXTURE_2D);
 }
 
 void Renderer::load() {
   glewExperimental = GL_TRUE;
   if (glewInit() != GLEW_OK)
     ERROR("Cannot initialize renderer");
+  glEnable(GL_DEPTH_TEST);
   glClearColor(0.605,0.664,0.745,1.0);
   glLineWidth(5.0);
 }
 
-void Renderer::render(ResRenderable &renderable, ResShader &shader, Transform& transform, Camera &camera) {
+void Renderer::render(ResRenderable &renderable, Material &material, Transform& transform, Camera &camera) {
+
+  ResShader &shader = material.getShader();
 
   glUseProgram(shader.handle);
 
@@ -91,12 +116,20 @@ void Renderer::render(ResRenderable &renderable, ResShader &shader, Transform& t
   loc = glGetUniformLocation(shader.handle, "matrixProjection");
   glUniformMatrix4fv(loc, 1, GL_FALSE, glm::value_ptr(matrixProjection));
 
+  // Set material uniforms
+  loc = glGetUniformLocation(shader.handle, "textureCount");
+  glUniform1ui(loc, material.getTextureCount());
+  for (auto i=0; i<material.getTextureCount(); i++) {
+    glActiveTexture(GL_TEXTURE0+i);
+    glBindTexture(GL_TEXTURE_2D, material.getTexture(i).handle);
+  }
+
   glBindVertexArray(renderable.vao);
-  glDrawArrays(GL_TRIANGLES, 0, renderable.vertexCount);
+  glDrawElements(GL_TRIANGLES, renderable.indiceCount, GL_UNSIGNED_INT, 0);
 }
 
 void Renderer::renderBefore() {
-  glClear(GL_COLOR_BUFFER_BIT);
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
 void Renderer::setWireframeMode(bool enabled) {

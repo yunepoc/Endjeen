@@ -15,12 +15,19 @@ struct ResRenderable: public Resource {
   void load(std::string root, std::string key);
   unsigned int vao;
   unsigned int vbo;
+  unsigned int ebo;
   unsigned int vertexCount;
+  unsigned int indiceCount;
 };
 
 struct ResShader: public Resource {
   void load(std::string root, std::string key);
   unsigned int handle;
+};
+
+struct ResTexture: public Resource {
+  void load(std::string root, std::string key);
+  unsigned handle;
 };
 
 class ResourceManager {

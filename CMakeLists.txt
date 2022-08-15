@@ -16,7 +16,13 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake_modules" ${CMAKE_MODULE_PATH})
 
 include_directories(include)
+include_directories(external)
 add_executable(Endjeen ${source})
+
+# Assimp
+find_package(assimp REQUIRED)
+include_directories(${ASSIMP_INCLUDE_DIR})
+target_link_libraries(Endjeen ${ASSIMP_LIBRARIES})
 
 # GLEW
 find_package(GLEW REQUIRED)
