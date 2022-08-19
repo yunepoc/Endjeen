@@ -6,6 +6,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <Material.hpp>
 #include <Resource.hpp>
+#include <Timer.hpp>
 #include <Transform.hpp>
 
 namespace ej {
@@ -91,6 +92,8 @@ void Renderer::load() {
   if (glewInit() != GLEW_OK)
     ERROR("Cannot initialize renderer");
   glEnable(GL_DEPTH_TEST);
+  glEnable(GL_BLEND);
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
   glClearColor(0.605,0.664,0.745,1.0);
   glLineWidth(5.0);
 }
@@ -120,9 +123,15 @@ void Renderer::render(ResRenderable &renderable, Material &material, Transform& 
   loc = glGetUniformLocation(shader.handle, "textureCount");
   glUniform1ui(loc, material.getTextureCount());
   for (auto i=0; i<material.getTextureCount(); i++) {
+    loc = glGetUniformLocation(shader.handle, ("texture" + std::to_string(i)).c_str());
+    glUniform1i(loc, i);
     glActiveTexture(GL_TEXTURE0+i);
     glBindTexture(GL_TEXTURE_2D, material.getTexture(i).handle);
   }
+
+  // Set other uniforms
+  loc = glGetUniformLocation(shader.handle, "elapsedTime");
+  glUniform1f(loc, Timer::getTime());
 
   glBindVertexArray(renderable.vao);
   glDrawElements(GL_TRIANGLES, renderable.indiceCount, GL_UNSIGNED_INT, 0);

@@ -51,6 +51,7 @@ class ResourceManager {
       res->load(root, key);
       return *res;
     }
+    std::string getRoot() { return root; }
   private:
     std::string root = "";
     std::unordered_map<std::string, std::unique_ptr<Resource>> cache;

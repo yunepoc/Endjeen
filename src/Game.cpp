@@ -1,6 +1,7 @@
 #include <Game.hpp>
 
 #include <Material.hpp>
+#include <Terrain.hpp>
 #include <Transform.hpp>
 
 namespace ej {
@@ -12,13 +13,8 @@ namespace ej {
   }
 
   void Game::run() {
-    // Terrain
-    ResRenderable &plane = resourceMgr.get<ResRenderable>("plane10x10x1.std");
-    ResShader &shader = resourceMgr.get<ResShader>("terrain.shader");
-    Transform transform;
-    transform.setPosition({0.0f, 0.0f, 0.0f});
-    ResTexture &texture = resourceMgr.get<ResTexture>("terrain.png");
-    Material material(shader, {&texture});
+
+    Terrain terrain;
 
     // Grid
     ResRenderable &grid = resourceMgr.get<ResRenderable>("plane1000x1000.std");
@@ -33,13 +29,15 @@ namespace ej {
     ResTexture &modelTexture = resourceMgr.get<ResTexture>("backpack.jpg");
     Material modelMaterial(modelShader, {&modelTexture});
 
+    Transform transform;
+
     renderer.setWireframeMode(false);
     while (window->isOpen()) {
       camera.update();
       renderer.renderBefore();
-      renderer.render(plane, material, transform, camera);
+      terrain.render(renderer, camera);
       renderer.render(grid, gridMaterial, gridTransform, camera);
-      renderer.render(model, modelMaterial, transform, camera);
+      //renderer.render(model, modelMaterial, transform, camera);
       window->swapBuffers();
       window->pollEvents();
     }

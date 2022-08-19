@@ -7,7 +7,7 @@
 namespace ej {
 
 Camera::Camera() {
-  position = {0.0, 8.0, zOffset};
+  position = {0.0, 12.0, zOffset};
 }
 
 glm::mat4 Camera::getProjectionMatrix() {
