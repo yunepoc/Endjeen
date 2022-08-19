@@ -20,6 +20,8 @@ class Renderer: public System {
     static void createTexture(unsigned char* data, unsigned width, unsigned height, ResTexture &texture);
     static void compileShader(std::string source, ResShader &shader, bool vertex);
     static void linkShaders(ResShader &vertex, ResShader &fragment, ResShader &pipeline);
+  private:
+    virtual void receive(SystemMsg& msg);
 };
 
 }

@@ -7,6 +7,13 @@
 
 namespace ej {
 
+static void resizeCallback(GLFWwindow* window, int width, int height) {
+  SystemMsg msg("window", "resize");
+  msg.addInt(width);
+  msg.addInt(height);
+  System::send(msg);
+}
+
 Window::Window(unsigned width, unsigned height, std::string title) {
   if (!glfwInit())
     ERROR("Cannot create window");
@@ -16,6 +23,7 @@ Window::Window(unsigned width, unsigned height, std::string title) {
   handle = static_cast<void*>(window);
   glfwMakeContextCurrent(window);
   glfwSwapInterval(0);
+  glfwSetFramebufferSizeCallback(window, resizeCallback);
 }
 
 Window::~Window() {

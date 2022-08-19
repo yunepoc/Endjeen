@@ -98,6 +98,15 @@ void Renderer::load() {
   glLineWidth(5.0);
 }
 
+void Renderer::receive(SystemMsg& msg) {
+  if (msg.getSystem() != "window" || msg.getMsg() != "resize")
+    return;
+  assert(msg.numInt() == 2 && "Unexpected message");
+  int width = msg.getInt(0);
+  int height = msg.getInt(1);
+  glViewport(0, 0, width, height);
+}
+
 void Renderer::render(ResRenderable &renderable, Material &material, Transform& transform, Camera &camera) {
 
   ResShader &shader = material.getShader();
