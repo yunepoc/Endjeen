@@ -4,6 +4,7 @@
 #include <memory>
 #include <Resource.hpp>
 #include <Renderer.hpp>
+#include <UI.hpp>
 #include <Window.hpp>
 
 namespace ej {
@@ -19,6 +20,7 @@ class Game {
         return game;
     }
 
+    Renderer& getRenderer() { return renderer; }
     Window& getWindow() { return *window; }
     ResourceManager& getResourceMgr() { return resourceMgr; }
     void init(std::string root);
@@ -28,8 +30,14 @@ class Game {
     Game() {};
     ResourceManager resourceMgr;
     Renderer renderer;
+    UI ui;
     std::unique_ptr<Window> window;
     Camera camera;
+
+    float lastFrame = 0.0;
+    float delta = 0.0;
+
+    bool showGrid = false;
 };
 
 }

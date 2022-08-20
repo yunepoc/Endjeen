@@ -25,8 +25,8 @@ glm::mat4 Camera::getViewMatrix() {
   return glm::lookAt(glm::vec3(position.x, position.y, position.z), glm::vec3(position.x, 0.0f, position.z-zOffset), glm::vec3(0.0f, 1.0f, 0.0f));
 }
 
-void Camera::update() {
-  float speed = 0.001;
+void Camera::update(float delta) {
+  float speed = 4 * delta;
   glm::vec2 translation(0.0f);
   if (Input::keyDown(Input::Key::A) || Input::keyDown(Input::Key::Left))
     translation.x -= 1.0;

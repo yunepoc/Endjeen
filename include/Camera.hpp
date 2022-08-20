@@ -10,7 +10,7 @@ class Camera {
     Camera();
     glm::mat4 getProjectionMatrix();
     glm::mat4 getViewMatrix();
-    void update();
+    void update(float delta);
   private:
     float zOffset = 6.0f;
     glm::vec3 position = glm::vec3(0.0f);

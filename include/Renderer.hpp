@@ -11,6 +11,7 @@ class Material;
 class Transform;
 class Renderer: public System {
   public:
+    float getFPS();
     virtual void load();
     void render(ResRenderable& renderable, Material& material, Transform& transform, Camera &camera);
     void renderBefore();
@@ -22,6 +23,9 @@ class Renderer: public System {
     static void linkShaders(ResShader &vertex, ResShader &fragment, ResShader &pipeline);
   private:
     virtual void receive(SystemMsg& msg);
+
+    float lastFrame = 0.0;
+    float FPS = 0.0;
 };
 
 }

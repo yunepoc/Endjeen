@@ -87,6 +87,10 @@ void Renderer::createTexture(unsigned char* data, unsigned width, unsigned heigh
   glGenerateMipmap(GL_TEXTURE_2D);
 }
 
+float Renderer::getFPS() {
+  return FPS;
+}
+
 void Renderer::load() {
   glewExperimental = GL_TRUE;
   if (glewInit() != GLEW_OK)
@@ -148,6 +152,11 @@ void Renderer::render(ResRenderable &renderable, Material &material, Transform& 
 
 void Renderer::renderBefore() {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  // Compute fps
+  float frame = Timer::getTime();
+  float elapsed = frame - lastFrame;
+  FPS = 1.0 / elapsed;
+  lastFrame = frame;
 }
 
 void Renderer::setWireframeMode(bool enabled) {

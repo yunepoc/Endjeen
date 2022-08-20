@@ -213,4 +213,8 @@ void ResourceManager::init(std::string root) {
   this->root = root;
 }
 
+std::string ResourceManager::getFilePath(std::string relative) {
+  return root + '/' + relative;
+}
+
 }

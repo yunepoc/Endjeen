@@ -2,6 +2,7 @@
 
 #include <Material.hpp>
 #include <Terrain.hpp>
+#include <Timer.hpp>
 #include <Transform.hpp>
 
 namespace ej {
@@ -10,6 +11,8 @@ namespace ej {
 
     resourceMgr.init(root);
     renderer.load();
+    ui.load();
+    ui.addDebugBoolean("Show grid", &showGrid);
   }
 
   void Game::run() {
@@ -33,11 +36,18 @@ namespace ej {
 
     renderer.setWireframeMode(false);
     while (window->isOpen()) {
-      camera.update();
+      // Compute delta
+      float frame = Timer::getTime();
+      delta = frame - lastFrame;
+      lastFrame = frame;
+
+      camera.update(delta);
       renderer.renderBefore();
       terrain.render(renderer, camera);
-      renderer.render(grid, gridMaterial, gridTransform, camera);
+      if (showGrid)
+        renderer.render(grid, gridMaterial, gridTransform, camera);
       //renderer.render(model, modelMaterial, transform, camera);
+      ui.render();
       window->swapBuffers();
       window->pollEvents();
     }

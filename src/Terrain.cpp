@@ -44,7 +44,7 @@ void Terrain::render(Renderer& renderer, Camera& camera) {
 
 void Terrain::loadHeightmap() {
   int nrChannels;
-  std::string path = Game::instance().getResourceMgr().getRoot() + "/heightmap.png";
+  std::string path = Game::instance().getResourceMgr().getFilePath("/heightmap.png");
   unsigned char *heights = stbi_load(path.c_str(), &width, &height, &nrChannels, 0);
   if (!heights)
     ERROR("Cannot load heightmap");
