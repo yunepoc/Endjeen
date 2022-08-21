@@ -1,7 +1,7 @@
 #include <Renderer.hpp>
 
+#include <App.hpp>
 #include <Debug.hpp>
-#include <Game.hpp>
 #include <GL/glew.h>
 #include <GL/gl.h>
 #include <glm/gtc/type_ptr.hpp>
@@ -104,7 +104,7 @@ void Renderer::load() {
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
   glClearColor(0.605,0.664,0.745,1.0);
   glLineWidth(5.0);
-  Game::instance().getUI().addDebugBoolean("Wireframe mode", &wireframe);
+  App::instance().getUI().addDebugBoolean("Wireframe mode", &wireframe);
 }
 
 void Renderer::receive(SystemMsg& msg) {
@@ -118,7 +118,7 @@ void Renderer::receive(SystemMsg& msg) {
 
 void Renderer::render(ResRenderable &renderable, Material &material, Transform& transform) {
 
-  Camera &camera = Game::instance().getCamera();
+  Camera &camera = App::instance().getCamera();
 
   ResShader &shader = material.getShader();
 

@@ -6,7 +6,7 @@
 #include <Debug.hpp>
 #include <filesystem>
 #include <fstream>
-#include <Game.hpp>
+#include <App.hpp>
 #include <regex>
 #include <Renderer.hpp>
 #define STB_IMAGE_IMPLEMENTATION
@@ -173,8 +173,8 @@ void ResShader::load(std::string root, std::string key) {
       return;
     }
 
-    ResShader &vertex   = Game::instance().getResourceMgr().get<ResShader>(vertexKey);
-    ResShader &fragment = Game::instance().getResourceMgr().get<ResShader>(fragmentKey);
+    ResShader &vertex   = App::instance().getResourceMgr().get<ResShader>(vertexKey);
+    ResShader &fragment = App::instance().getResourceMgr().get<ResShader>(fragmentKey);
     Renderer::linkShaders(vertex, fragment, *this);
   // .vertex or .fragment file containing a shader source
   } else if (key.ends_with(".vertex") || key.ends_with(".fragment")) {

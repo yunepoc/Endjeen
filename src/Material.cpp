@@ -1,11 +1,11 @@
 #include <Material.hpp>
 
+#include <App.hpp>
 #include <cassert>
-#include <Game.hpp>
 
 namespace ej {
 
-Material::Material(): shader(&Game::instance().getResourceMgr().get<ResShader>("default.shader")) {
+Material::Material(): shader(&App::instance().getResourceMgr().get<ResShader>("default.shader")) {
 }
 
 void Material::addTexture(ResTexture &texture) {

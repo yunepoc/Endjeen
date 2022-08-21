@@ -1,6 +1,6 @@
 #include <UI.hpp>
 
-#include <Game.hpp>
+#include <App.hpp>
 #include <imgui/imgui_impl_glfw.h>
 #include <imgui/imgui_impl_opengl3.h>
 
@@ -13,7 +13,7 @@ void UI::addDebugBoolean(std::string name, bool* value) {
 void UI::gameUI() {
   ImGui::SetNextWindowPos(ImVec2(0,0));
   ImGui::SetNextWindowSize(ImVec2(400,400));
-  ImGui::Begin("Game");
+  ImGui::Begin("App");
   ImGui::Button("House");
   ImGui::End();
 }
@@ -23,7 +23,7 @@ void UI::debugUI() {
   ImGui::SetNextWindowSize(ImVec2(400,400));
   ImGui::Begin("Debug");
   // FPS counter
-  std::string fps = std::to_string(std::lround(Game::instance().getRenderer().getFPS()));
+  std::string fps = std::to_string(std::lround(App::instance().getRenderer().getFPS()));
   ImGui::Text(("FPS: " + fps).c_str());
   // Boolean debug values
   for (auto &p: debugBooleans) {
@@ -35,12 +35,12 @@ void UI::debugUI() {
 
 void UI::load() {
   ImGui::CreateContext();
-  void* handle = Game::instance().getWindow().getHandle();
+  void* handle = App::instance().getWindow().getHandle();
   ImGui_ImplOpenGL3_Init();
   ImGui_ImplGlfw_InitForOpenGL(static_cast<GLFWwindow*>(handle),true);
   ImGui::StyleColorsDark();
   ImGuiIO& io = ImGui::GetIO();
-  std::string path = Game::instance().getResourceMgr().getFilePath("/font.ttf");
+  std::string path = App::instance().getResourceMgr().getFilePath("/font.ttf");
   io.Fonts->AddFontFromFileTTF(path.c_str(), 48);
 }
 

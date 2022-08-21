@@ -1,6 +1,6 @@
 #include <Terrain.hpp>
 
-#include <Game.hpp>
+#include <App.hpp>
 #include <Resource.hpp>
 #include <stb_image/stb_image.h>
 
@@ -8,7 +8,7 @@ namespace ej {
 
 Terrain::Terrain() {
   renderableGround = new ResRenderable();
-  ResourceManager& resourceMgr = Game::instance().getResourceMgr();
+  ResourceManager& resourceMgr = App::instance().getResourceMgr();
 
   // Gnerate mesh data & indices from heightmap
   loadHeightmap();
@@ -38,14 +38,14 @@ Terrain::Terrain() {
 }
 
 void Terrain::render() {
-  Renderer &renderer = Game::instance().getRenderer();
+  Renderer &renderer = App::instance().getRenderer();
   renderer.render(*renderableGround, materialGround, transformGround);
   renderer.render(*renderableWater, materialWater, transformWater);
 }
 
 void Terrain::loadHeightmap() {
   int nrChannels;
-  std::string path = Game::instance().getResourceMgr().getFilePath("/heightmap.png");
+  std::string path = App::instance().getResourceMgr().getFilePath("/heightmap.png");
   unsigned char *heights = stbi_load(path.c_str(), &width, &height, &nrChannels, 0);
   if (!heights)
     ERROR("Cannot load heightmap");

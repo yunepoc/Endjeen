@@ -1,6 +1,6 @@
 #include <Camera.hpp>
 
-#include <Game.hpp>
+#include <App.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <Input.hpp>
 
@@ -15,7 +15,7 @@ glm::mat4 Camera::getProjectionMatrix() {
   float fov = 45.0f;
   float near = 1.0f;
   float far = 500.0f;
-  glm::uvec2 size = Game::instance().getWindow().getSize();
+  glm::uvec2 size = App::instance().getWindow().getSize();
   float ratio = (float)size.x / (float)size.y;
   glm::mat4 matrixProjection = glm::perspective(glm::radians(fov), (float)(ratio), near, far);
   return matrixProjection;

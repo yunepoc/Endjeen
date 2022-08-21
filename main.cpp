@@ -1,13 +1,13 @@
 #include <Debug.hpp>
-#include <Game.hpp>
+#include <App.hpp>
 
 int main() {
 
   LOG("Sarting game...");
-  ej::Game& game = ej::Game::instance();
-  game.init("../../../GameContent/");
-  game.run();
-  game.stop();
+  ej::App& app = ej::App::instance();
+  app.init("../../../GameContent/");
+  app.run();
+  app.stop();
 
   return 0;
 }

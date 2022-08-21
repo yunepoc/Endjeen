@@ -1,57 +1,55 @@
 #include <Game.hpp>
 
-#include <Material.hpp>
-#include <Terrain.hpp>
-#include <Timer.hpp>
-#include <Transform.hpp>
+#include <App.hpp>
+#include <fstream>
 
 namespace ej {
-  void Game::init(std::string root) {
-    window = std::unique_ptr<Window>(new ej::Window(2560, 1440, "Endjeen"));
 
-    resourceMgr.init(root);
-    // The order of the loads is important here
-    ui.load();
-    renderer.load();
-    content.load();
-    ui.addDebugBoolean("Show grid", &showGrid);
-  }
+Building* Building::create() {
+  return new Building(*this);
+}
 
-  void Game::run() {
+void Building::render() {
+  Renderer &renderer = App::instance().getRenderer();
+  renderer.render(renderable, material, transform);
+}
 
-    Terrain terrain;
+void Building::setTilePosition(glm::vec2 tile) {
+  float x = tile.x + size.x/2.0f;
+  float y = -tile.y - size.y/2.0f;
+  transform.setPosition({x, 0.0, y});
+}
 
-    // Grid
-    ResRenderable &grid = resourceMgr.get<ResRenderable>("plane1000x1000.std");
-    ResShader &gridShader = resourceMgr.get<ResShader>("grid.shader");
-    Transform gridTransform;
-    gridTransform.setPosition({-500.0f, 0.01f, 500.0f});
-    Material gridMaterial(gridShader);
+void Building::load(nlohmann::json &json) {
+  name = json["name"];
+  size = { json["size"][0], json["size"][1] };
+  renderable = App::instance().getResourceMgr().get<ResRenderable>(json["model"]);
+  ResTexture &texture = App::instance().getResourceMgr().get<ResTexture>(json["texture"]);
+  ResShader &shader = App::instance().getResourceMgr().get<ResShader>("default.shader");
+  material = Material(shader, {&texture});
+  setTilePosition({0, 0});
+}
 
-    // Test building
-    Building *house = content.createBuilding("house");
-    house->setTilePosition({8, 10});
+Building* Game::createBuilding(std::string name) {
+  for (auto &b: buildings)
+    if (b->getName() == name)
+      return b->create();
+  ERROR("Invalid building name");
+}
 
-    while (window->isOpen()) {
-      // Compute delta
-      float frame = Timer::getTime();
-      delta = frame - lastFrame;
-      lastFrame = frame;
-
-      camera.update(delta);
-      renderer.renderBefore();
-      terrain.render();
-      if (showGrid)
-        renderer.render(grid, gridMaterial, gridTransform);
-      house->render();
-      ui.render();
-      window->swapBuffers();
-      window->pollEvents();
+void Game::load() {
+  // Load buildings
+  std::string pathBuildings = App::instance().getResourceMgr().getFilePath("logic/buildings/");
+  if (!std::filesystem::is_directory(pathBuildings))
+    ERROR("Invalid path");
+  for (const auto &file : std::filesystem::directory_iterator(pathBuildings))
+    if (file.is_regular_file() && file.path().extension() == ".json") {
+      std::unique_ptr<Building> building = std::make_unique<Building>();
+      std::ifstream stream(file.path());
+      nlohmann::json data = nlohmann::json::parse(stream);
+      building->load(data);
+      buildings.push_back(std::move(building));
     }
-    delete house;
-  }
+}
 
-  void Game::stop() {
-    renderer.shutdown();
-  }
 }
