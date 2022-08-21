@@ -7,7 +7,8 @@
 namespace ej {
 
 Camera::Camera() {
-  position = {0.0, 12.0, zOffset};
+  transform.setPosition({0, 10, 0});
+  transform.setRotation({-55, 0, 0});
 }
 
 glm::mat4 Camera::getProjectionMatrix() {
@@ -21,12 +22,12 @@ glm::mat4 Camera::getProjectionMatrix() {
 }
 
 glm::mat4 Camera::getViewMatrix() {
-  // position, target, up
-  return glm::lookAt(glm::vec3(position.x, position.y, position.z), glm::vec3(position.x, 0.0f, position.z-zOffset), glm::vec3(0.0f, 1.0f, 0.0f));
+  return glm::inverse(transform.getModelMatrix());
 }
 
 void Camera::update(float delta) {
-  float speed = 4 * delta;
+  // Translation
+  float speed = 8 * delta;
   glm::vec2 translation(0.0f);
   if (Input::keyDown(Input::Key::A) || Input::keyDown(Input::Key::Left))
     translation.x -= 1.0;
@@ -39,8 +40,20 @@ void Camera::update(float delta) {
   if (translation.x != 0.0 || translation.y != 0.0)
     translation = glm::normalize(translation);
   translation *= speed;
+  auto position = transform.getPosition();
   position.x += translation.x;
   position.z += translation.y;
+  transform.setPosition(position);
+  // Zoom
+  speed = 10 * delta;
+  if (Input::keyDown(Input::Key::Add) || Input::keyDown(Input::Key::Subtract)) {
+    int mod = Input::keyDown(Input::Key::Subtract) ? -1 : 1;
+    glm::vec3 forward = transform.forward();
+    forward.x *= speed * mod;
+    forward.y *= speed * mod;
+    forward.z *= speed * mod;
+    transform.translate(forward);
+  }
 }
 
 }
