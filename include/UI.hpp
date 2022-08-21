@@ -6,6 +6,8 @@ namespace ej {
 
 class UI: public System {
   public:
+    // TODO: instead of passing a boolean ptr, we should store the value here
+    // and send a message when a value is changed.
     void addDebugBoolean(std::string name, bool* value);
     void load();
     void render();

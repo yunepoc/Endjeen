@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Camera.hpp>
+#include <GameContent.hpp>
 #include <memory>
 #include <Resource.hpp>
 #include <Renderer.hpp>
@@ -20,7 +21,9 @@ class Game {
         return game;
     }
 
+    Camera& getCamera() { return camera; }
     Renderer& getRenderer() { return renderer; }
+    UI& getUI() { return ui; }
     Window& getWindow() { return *window; }
     ResourceManager& getResourceMgr() { return resourceMgr; }
     void init(std::string root);
@@ -28,6 +31,7 @@ class Game {
     void stop();
   private:
     Game() {};
+    GameContent content;
     ResourceManager resourceMgr;
     Renderer renderer;
     UI ui;

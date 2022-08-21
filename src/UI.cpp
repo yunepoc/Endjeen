@@ -10,10 +10,16 @@ void UI::addDebugBoolean(std::string name, bool* value) {
   debugBooleans.push_back({name, value});
 }
 
-void UI::gameUI() {}
+void UI::gameUI() {
+  ImGui::SetNextWindowPos(ImVec2(0,0));
+  ImGui::SetNextWindowSize(ImVec2(400,400));
+  ImGui::Begin("Game");
+  ImGui::Button("House");
+  ImGui::End();
+}
 
 void UI::debugUI() {
-  ImGui::SetNextWindowPos(ImVec2(0,0));
+  ImGui::SetNextWindowPos(ImVec2(500,0));
   ImGui::SetNextWindowSize(ImVec2(400,400));
   ImGui::Begin("Debug");
   // FPS counter

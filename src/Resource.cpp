@@ -203,7 +203,7 @@ void ResTexture::load(std::string root, std::string key) {
     handle = 0;
     return;
   }
-  Renderer::createTexture(data, width, height, *this);
+  Renderer::createTexture(data, width, height, *this, nrChannels == 4);
   stbi_image_free(data);
 }
 
@@ -214,6 +214,7 @@ void ResourceManager::init(std::string root) {
 }
 
 std::string ResourceManager::getFilePath(std::string relative) {
+  assert(root != "" && "Resource manager should be initialized");
   return root + '/' + relative;
 }
 

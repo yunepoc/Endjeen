@@ -10,8 +10,10 @@ namespace ej {
     window = std::unique_ptr<Window>(new ej::Window(2560, 1440, "Endjeen"));
 
     resourceMgr.init(root);
-    renderer.load();
+    // The order of the loads is important here
     ui.load();
+    renderer.load();
+    content.load();
     ui.addDebugBoolean("Show grid", &showGrid);
   }
 
@@ -26,15 +28,10 @@ namespace ej {
     gridTransform.setPosition({-500.0f, 0.01f, 500.0f});
     Material gridMaterial(gridShader);
 
-    // Model test
-    ResRenderable &model = resourceMgr.get<ResRenderable>("backpack/backpack.obj");
-    ResShader &modelShader = resourceMgr.get<ResShader>("default.shader");
-    ResTexture &modelTexture = resourceMgr.get<ResTexture>("backpack.jpg");
-    Material modelMaterial(modelShader, {&modelTexture});
+    // Test building
+    Building *house = content.createBuilding("house");
+    house->setTilePosition({8, 10});
 
-    Transform transform;
-
-    renderer.setWireframeMode(false);
     while (window->isOpen()) {
       // Compute delta
       float frame = Timer::getTime();
@@ -43,14 +40,15 @@ namespace ej {
 
       camera.update(delta);
       renderer.renderBefore();
-      terrain.render(renderer, camera);
+      terrain.render();
       if (showGrid)
-        renderer.render(grid, gridMaterial, gridTransform, camera);
-      //renderer.render(model, modelMaterial, transform, camera);
+        renderer.render(grid, gridMaterial, gridTransform);
+      house->render();
       ui.render();
       window->swapBuffers();
       window->pollEvents();
     }
+    delete house;
   }
 
   void Game::stop() {

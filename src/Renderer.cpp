@@ -1,6 +1,7 @@
 #include <Renderer.hpp>
 
 #include <Debug.hpp>
+#include <Game.hpp>
 #include <GL/glew.h>
 #include <GL/gl.h>
 #include <glm/gtc/type_ptr.hpp>
@@ -76,14 +77,17 @@ void Renderer::createRenderable(std::vector<float> &data, std::vector<unsigned> 
   glBindVertexArray(0);
 }
 
-void Renderer::createTexture(unsigned char* data, unsigned width, unsigned height, ResTexture &texture) {
+void Renderer::createTexture(unsigned char* data, unsigned width, unsigned height, ResTexture &texture, bool hasAlpha) {
   glGenTextures(1, &texture.handle);
   glBindTexture(GL_TEXTURE_2D, texture.handle);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+  if (hasAlpha)
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+  else
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
   glGenerateMipmap(GL_TEXTURE_2D);
 }
 
@@ -100,6 +104,7 @@ void Renderer::load() {
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
   glClearColor(0.605,0.664,0.745,1.0);
   glLineWidth(5.0);
+  Game::instance().getUI().addDebugBoolean("Wireframe mode", &wireframe);
 }
 
 void Renderer::receive(SystemMsg& msg) {
@@ -111,7 +116,9 @@ void Renderer::receive(SystemMsg& msg) {
   glViewport(0, 0, width, height);
 }
 
-void Renderer::render(ResRenderable &renderable, Material &material, Transform& transform, Camera &camera) {
+void Renderer::render(ResRenderable &renderable, Material &material, Transform& transform) {
+
+  Camera &camera = Game::instance().getCamera();
 
   ResShader &shader = material.getShader();
 
@@ -152,18 +159,15 @@ void Renderer::render(ResRenderable &renderable, Material &material, Transform& 
 
 void Renderer::renderBefore() {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  if (wireframe)
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+  else
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
   // Compute fps
   float frame = Timer::getTime();
   float elapsed = frame - lastFrame;
   FPS = 1.0 / elapsed;
   lastFrame = frame;
-}
-
-void Renderer::setWireframeMode(bool enabled) {
-  if (enabled)
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-  else
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
 void Renderer::shutdown() {

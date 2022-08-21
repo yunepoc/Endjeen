@@ -5,14 +5,12 @@
 
 namespace ej {
 
-class Camera;
-class Renderer;
 class ResRenderable;
 class ResShader;
 class Terrain {
   public:
     Terrain();
-    void render(Renderer& renderer, Camera& camera);
+    void render();
   private:
     ResRenderable *renderableGround;
     Transform transformGround;

@@ -37,9 +37,10 @@ Terrain::Terrain() {
   transformWater.setScale({4.0, 1.0, 4.0});
 }
 
-void Terrain::render(Renderer& renderer, Camera& camera) {
-  renderer.render(*renderableGround, materialGround, transformGround, camera);
-  renderer.render(*renderableWater, materialWater, transformWater, camera);
+void Terrain::render() {
+  Renderer &renderer = Game::instance().getRenderer();
+  renderer.render(*renderableGround, materialGround, transformGround);
+  renderer.render(*renderableWater, materialWater, transformWater);
 }
 
 void Terrain::loadHeightmap() {
