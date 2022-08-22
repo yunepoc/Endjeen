@@ -77,6 +77,23 @@ void Renderer::createRenderable(std::vector<float> &data, std::vector<unsigned> 
   glBindVertexArray(0);
 }
 
+void Renderer::createLinesRenderable(std::vector<float> &data, ResRenderable &renderable) {
+  renderable.vertexCount = data.size() / 3; // For lines renderable, we only store the position
+  renderable.indiceCount = 0;
+  glGenVertexArrays(1, &renderable.vao);
+  glGenBuffers(1, &renderable.vbo);
+  glBindVertexArray(renderable.vao);
+
+  glBindBuffer(GL_ARRAY_BUFFER, renderable.vbo);
+  glBufferData(GL_ARRAY_BUFFER, data.size() * sizeof(float), data.data(), GL_STATIC_DRAW);
+
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+  glEnableVertexAttribArray(0);
+
+  glBindBuffer(GL_ARRAY_BUFFER, 0);
+  glBindVertexArray(0);
+}
+
 void Renderer::createTexture(unsigned char* data, unsigned width, unsigned height, ResTexture &texture, bool hasAlpha) {
   glGenTextures(1, &texture.handle);
   glBindTexture(GL_TEXTURE_2D, texture.handle);
@@ -89,6 +106,13 @@ void Renderer::createTexture(unsigned char* data, unsigned width, unsigned heigh
   else
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
   glGenerateMipmap(GL_TEXTURE_2D);
+}
+
+void Renderer::deleteRenderable(ResRenderable &renderable) {
+  glDeleteVertexArrays(1, &renderable.vao);
+  glDeleteBuffers(1, &renderable.vbo);
+  if (renderable.indiceCount != 0)
+    glDeleteBuffers(1, &renderable.ebo);
 }
 
 float Renderer::getFPS() {
@@ -154,7 +178,10 @@ void Renderer::render(ResRenderable &renderable, Material &material, Transform& 
   glUniform1f(loc, Timer::getTime());
 
   glBindVertexArray(renderable.vao);
-  glDrawElements(GL_TRIANGLES, renderable.indiceCount, GL_UNSIGNED_INT, 0);
+  if (renderable.indiceCount == 0) {
+    glDrawArrays(GL_LINES, 0, renderable.vertexCount);
+  } else
+    glDrawElements(GL_TRIANGLES, renderable.indiceCount, GL_UNSIGNED_INT, 0);
 }
 
 void Renderer::renderBefore() {

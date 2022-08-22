@@ -13,6 +13,7 @@ namespace ej {
     // The order of the loads is important here
     ui.load();
     renderer.load();
+    physics.load();
     game.load();
     ui.addDebugBoolean("Show grid", &showGrid);
   }
@@ -44,6 +45,7 @@ namespace ej {
       if (showGrid)
         renderer.render(grid, gridMaterial, gridTransform);
       house->render();
+      physics.render();
       ui.render();
       window->swapBuffers();
       window->pollEvents();

@@ -25,6 +25,11 @@ find_package(assimp REQUIRED)
 include_directories(${ASSIMP_INCLUDE_DIR})
 target_link_libraries(Endjeen ${ASSIMP_LIBRARIES})
 
+# Bullet
+find_package(Bullet REQUIRED)
+include_directories(${BULLET_INCLUDE_DIR})
+target_link_libraries(Endjeen ${BULLET_LIBRARIES})
+
 # GLEW
 find_package(GLEW REQUIRED)
 include_directories(${GLEW_INCLUDE_DIR})

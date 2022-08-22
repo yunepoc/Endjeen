@@ -6,18 +6,25 @@
 namespace ej {
 
 Building* Building::create() {
-  return new Building(*this);
+  Building* instance = new Building(*this);
+  App::instance().getPhysics().createPhysicsBox(instance->box, size);
+  instance->isTemplate = false;
+  return instance;
 }
 
 void Building::render() {
-  Renderer &renderer = App::instance().getRenderer();
-  renderer.render(renderable, material, transform);
+  if (!isTemplate) {
+    Renderer &renderer = App::instance().getRenderer();
+    renderer.render(renderable, material, transform);
+  }
 }
 
 void Building::setTilePosition(glm::vec2 tile) {
+  assert(!isTemplate && "Cannot set position of a template building");
   float x = tile.x + size.x/2.0f;
   float y = -tile.y - size.y/2.0f;
   transform.setPosition({x, 0.0, y});
+  box.setPosition({x, 0.0, y});
 }
 
 void Building::load(nlohmann::json &json) {
@@ -28,7 +35,6 @@ void Building::load(nlohmann::json &json) {
   ResShader &shader = App::instance().getResourceMgr().get<ResShader>("default.shader");
   material = Material(shader, {&texture});
   icon = App::instance().getResourceMgr().get<ResTexture>(json["icon512"]);
-  setTilePosition({0, 0});
 }
 
 Building* Game::createBuilding(std::string name) {

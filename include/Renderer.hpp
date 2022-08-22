@@ -16,7 +16,9 @@ class Renderer: public System {
     void renderBefore();
     virtual void shutdown();
     static void createRenderable(std::vector<float> &data, std::vector<unsigned> &indices, ResRenderable &renderable);
+    static void createLinesRenderable(std::vector<float> &data, ResRenderable &renderable);
     static void createTexture(unsigned char* data, unsigned width, unsigned height, ResTexture &texture, bool hasAlpha);
+    static void deleteRenderable(ResRenderable &renderable);
     static void compileShader(std::string source, ResShader &shader, bool vertex);
     static void linkShaders(ResShader &vertex, ResShader &fragment, ResShader &pipeline);
   private:

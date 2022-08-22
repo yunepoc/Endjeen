@@ -3,6 +3,7 @@
 #include <Camera.hpp>
 #include <Game.hpp>
 #include <memory>
+#include <Physics.hpp>
 #include <Resource.hpp>
 #include <Renderer.hpp>
 #include <UI.hpp>
@@ -23,6 +24,7 @@ class App {
 
     Camera& getCamera() { return camera; }
     Game& getGame() { return game; }
+    Physics& getPhysics() { return physics; }
     Renderer& getRenderer() { return renderer; }
     UI& getUI() { return ui; }
     Window& getWindow() { return *window; }
@@ -33,6 +35,7 @@ class App {
   private:
     App() {};
     Game game;
+    Physics physics;
     ResourceManager resourceMgr;
     Renderer renderer;
     UI ui;
