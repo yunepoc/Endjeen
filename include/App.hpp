@@ -22,6 +22,7 @@ class App {
     }
 
     Camera& getCamera() { return camera; }
+    Game& getGame() { return game; }
     Renderer& getRenderer() { return renderer; }
     UI& getUI() { return ui; }
     Window& getWindow() { return *window; }

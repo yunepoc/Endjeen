@@ -7,7 +7,7 @@
 
 namespace ej {
   void App::init(std::string root) {
-    window = std::unique_ptr<Window>(new ej::Window(2560, 1440, "Endjeen"));
+    window = std::unique_ptr<Window>(new ej::Window(2560, 1440));
 
     resourceMgr.init(root);
     // The order of the loads is important here

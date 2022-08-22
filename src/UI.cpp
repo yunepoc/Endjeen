@@ -12,14 +12,17 @@ void UI::addDebugBoolean(std::string name, bool* value) {
 
 void UI::gameUI() {
   ImGui::SetNextWindowPos(ImVec2(0,0));
-  ImGui::SetNextWindowSize(ImVec2(400,400));
-  ImGui::Begin("App");
-  ImGui::Button("House");
+  ImGui::SetNextWindowSize(ImVec2(0,0));
+  bool b;
+  ImGui::Begin("Game", &b, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize);
+  auto& buildings = App::instance().getGame().getBuildings();
+  for (auto& building: buildings)
+    ImGui::ImageButton(building->getName().c_str(),(void*)(intptr_t)building->getIcon().handle, {96,96});
   ImGui::End();
 }
 
 void UI::debugUI() {
-  ImGui::SetNextWindowPos(ImVec2(500,0));
+  ImGui::SetNextWindowPos(ImVec2(0,500));
   ImGui::SetNextWindowSize(ImVec2(400,400));
   ImGui::Begin("Debug");
   // FPS counter

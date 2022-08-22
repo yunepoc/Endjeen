@@ -8,7 +8,7 @@ namespace ej {
 
 class Window : public System {
   public:
-    Window(unsigned width, unsigned height, std::string title);
+    Window(unsigned width, unsigned height);
     ~Window();
 
     void* getHandle() { return handle; }
@@ -20,6 +20,7 @@ class Window : public System {
     void swapBuffers();
   private:
     void* handle;
+    void receive(SystemMsg& msg);
 };
 
 }

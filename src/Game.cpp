@@ -27,6 +27,7 @@ void Building::load(nlohmann::json &json) {
   ResTexture &texture = App::instance().getResourceMgr().get<ResTexture>(json["texture"]);
   ResShader &shader = App::instance().getResourceMgr().get<ResShader>("default.shader");
   material = Material(shader, {&texture});
+  icon = App::instance().getResourceMgr().get<ResTexture>(json["icon512"]);
   setTilePosition({0, 0});
 }
 
@@ -38,8 +39,16 @@ Building* Game::createBuilding(std::string name) {
 }
 
 void Game::load() {
+  ResourceManager& resMgr = App::instance().getResourceMgr();
+  // Load game infos
+  std::string pathInfos = resMgr.getFilePath("logic/game.json");
+  if (!std::filesystem::exists(pathInfos))
+    ERROR("Invalid path");
+  std::ifstream stream(pathInfos);
+  nlohmann::json data = nlohmann::json::parse(stream);
+  loadInfos(data);
   // Load buildings
-  std::string pathBuildings = App::instance().getResourceMgr().getFilePath("logic/buildings/");
+  std::string pathBuildings = resMgr.getFilePath("logic/buildings/");
   if (!std::filesystem::is_directory(pathBuildings))
     ERROR("Invalid path");
   for (const auto &file : std::filesystem::directory_iterator(pathBuildings))
@@ -50,6 +59,13 @@ void Game::load() {
       building->load(data);
       buildings.push_back(std::move(building));
     }
+  //
+  SystemMsg msg("game","loaded");
+  System::send(msg);
+}
+
+void Game::loadInfos(nlohmann::json &json) {
+  name = json["name"];
 }
 
 }

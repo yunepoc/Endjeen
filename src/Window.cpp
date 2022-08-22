@@ -1,5 +1,6 @@
 #include <Window.hpp>
 
+#include <App.hpp>
 #include <Debug.hpp>
 #include <GLFW/glfw3.h>
 
@@ -14,10 +15,10 @@ static void resizeCallback(GLFWwindow* window, int width, int height) {
   System::send(msg);
 }
 
-Window::Window(unsigned width, unsigned height, std::string title) {
+Window::Window(unsigned width, unsigned height) {
   if (!glfwInit())
     ERROR("Cannot create window");
-  GLFWwindow *window = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
+  GLFWwindow *window = glfwCreateWindow(width, height, "", NULL, NULL);
   if (!window)
     ERROR("Cannot create window");
   handle = static_cast<void*>(window);
@@ -40,5 +41,12 @@ glm::uvec2 Window::getSize() {
 bool Window::isOpen() { return !glfwWindowShouldClose(WIN); }
 void Window::pollEvents() { glfwPollEvents(); }
 void Window::swapBuffers() { glfwSwapBuffers(WIN); }
+
+void Window::receive(SystemMsg& msg) {
+  if (msg.getSystem() == "game" && msg.getMsg() == "loaded") {
+    std::string name = App::instance().getGame().getName();
+    glfwSetWindowTitle(WIN, name.c_str());
+  }
+}
 
 }
