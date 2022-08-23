@@ -29,4 +29,16 @@ bool Input::keyDown(Key key) {
   return glfwGetKey(window, GLFWKey) == GLFW_PRESS;
 }
 
+static void scrollCallback(GLFWwindow* window, double x, double y) {
+  SystemMsg msg("input", "scroll");
+  msg.addInt(x);
+  msg.addInt(y);
+  System::send(msg);
+}
+
+void Input::load() {
+  void* handle = App::instance().getWindow().getHandle();
+  glfwSetScrollCallback((GLFWwindow*)handle, scrollCallback);
+}
+
 }

@@ -31,6 +31,10 @@ Window::~Window() {
   glfwTerminate();
 }
 
+void Window::load() {
+  App::instance().getUI().addDebugBoolean("FPS limit", &limitFPS);
+}
+
 glm::uvec2 Window::getSize() {
   int width;
   int height;
@@ -41,6 +45,10 @@ glm::uvec2 Window::getSize() {
 bool Window::isOpen() { return !glfwWindowShouldClose(WIN); }
 void Window::pollEvents() { glfwPollEvents(); }
 void Window::swapBuffers() { glfwSwapBuffers(WIN); }
+
+void Window::update() {
+  glfwSwapInterval(limitFPS);
+}
 
 void Window::receive(SystemMsg& msg) {
   if (msg.getSystem() == "game" && msg.getMsg() == "loaded") {

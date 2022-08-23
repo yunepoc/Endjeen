@@ -25,6 +25,19 @@ glm::mat4 Camera::getViewMatrix() {
   return glm::inverse(transform.getModelMatrix());
 }
 
+void Camera::receive(SystemMsg& msg) {
+  if (msg.getSystem() != "input" && msg.getMsg() != "scroll")
+    return;
+  // Zoom in/out
+  int x = msg.getInt(0);
+  int y = msg.getInt(1);
+  glm::vec3 forward = transform.forward();
+  forward.x *= y;
+  forward.y *= y;
+  forward.z *= y;
+  transform.translate(forward);
+}
+
 void Camera::update(float delta) {
   // Translation
   float speed = 8 * delta;

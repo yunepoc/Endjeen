@@ -15,6 +15,8 @@ namespace ej {
     renderer.load();
     physics.load();
     game.load();
+    window->load();
+    input.load();
     ui.addDebugBoolean("Show grid", &showGrid);
   }
 
@@ -40,6 +42,7 @@ namespace ej {
       lastFrame = frame;
 
       camera.update(delta);
+      window->update();
       renderer.renderBefore();
       terrain.render();
       if (showGrid)

@@ -2,6 +2,7 @@
 
 #include <Camera.hpp>
 #include <Game.hpp>
+#include <Input.hpp>
 #include <memory>
 #include <Physics.hpp>
 #include <Resource.hpp>
@@ -35,6 +36,7 @@ class App {
   private:
     App() {};
     Game game;
+    Input input;
     Physics physics;
     ResourceManager resourceMgr;
     Renderer renderer;

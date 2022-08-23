@@ -14,13 +14,15 @@ class Window : public System {
     void* getHandle() { return handle; }
     glm::uvec2 getSize();
     bool isOpen();
-    void load() {};
+    void load();
     void pollEvents();
     void shutdown() {};
     void swapBuffers();
+    void update();
   private:
     void* handle;
     void receive(SystemMsg& msg);
+    bool limitFPS = false;
 };
 
 }
