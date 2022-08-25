@@ -17,8 +17,9 @@ Terrain::Terrain() {
   Renderer::createRenderable(data, indices, *renderableGround);
 
   // Ground
+  float scale = 0.2;
   ResShader &shader = resourceMgr.get<ResShader>("terrain.shader");
-  transformGround.setScale({0.2f, 1.0f, 0.2f});
+  transformGround.setScale({scale, 1.0f, scale});
   ResTexture &textureGround = resourceMgr.get<ResTexture>("terrain.png");
   ResTexture &textureCliff = resourceMgr.get<ResTexture>("cliff.jpg");
   materialGround.setShader(shader);
@@ -35,6 +36,9 @@ Terrain::Terrain() {
   auto pos = transformGround.getPosition();
   transformWater.setPosition({pos.x, pos.y-0.2, pos.z});
   transformWater.setScale({4.0, 1.0, 4.0});
+
+  App::instance().getPhysics().createPhysicsBox(physicsBox, {width * scale, 0.1, height * scale});
+  physicsBox.setPosition({width * scale / 2.0, 0, -height * scale / 2.0});
 }
 
 void Terrain::render() {

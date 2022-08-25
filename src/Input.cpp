@@ -22,6 +22,13 @@ static int keyToGLFWKey(Input::Key key) {
   }
 }
 
+glm::vec2 Input::getMousePosition() {
+  double x, y;
+  GLFWwindow *window = static_cast<GLFWwindow*>(App::instance().getWindow().getHandle());
+  glfwGetCursorPos(window, &x, &y);
+  return {x, y};
+}
+
 bool Input::keyDown(Key key) {
   void* handle = App::instance().getWindow().getHandle();
   GLFWwindow* window = static_cast<GLFWwindow*>(handle);

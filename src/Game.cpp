@@ -7,7 +7,7 @@ namespace ej {
 
 Building* Building::create() {
   Building* instance = new Building(*this);
-  App::instance().getPhysics().createPhysicsBox(instance->box, size);
+  App::instance().getPhysics().createPhysicsBox(instance->box, {size.x, 0, size.y});
   instance->isTemplate = false;
   return instance;
 }
@@ -68,6 +68,27 @@ void Game::load() {
   //
   SystemMsg msg("game","loaded");
   System::send(msg);
+
+  current = createBuilding("house");
+  current->setTilePosition({0, 0});
+}
+
+void Game::render() {
+  current->render();
+}
+
+void Game::update() {
+  glm::vec2 mousePos = Input::getMousePosition();
+  auto ray = App::instance().getCamera().screenToRay(mousePos);
+  glm::vec3 start = ray.first;
+  glm::vec3 dir = ray.second;
+
+  auto res = App::instance().getPhysics().raycast(start, dir);
+  if (res.first) {
+    int tilex = std::floor(res.second.x);
+    int tiley = std::floor(res.second.z*-1);
+    current->setTilePosition({tilex, tiley});
+  }
 }
 
 void Game::loadInfos(nlohmann::json &json) {

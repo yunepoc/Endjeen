@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Material.hpp>
+#include <Physics.hpp>
 #include <Transform.hpp>
 
 namespace ej {
@@ -15,6 +16,7 @@ class Terrain {
     ResRenderable *renderableGround;
     Transform transformGround;
     Material materialGround;
+    PhysicsBox physicsBox;
 
     ResRenderable *renderableWater;
     Transform transformWater;

@@ -40,16 +40,21 @@ namespace ej {
       float frame = Timer::getTime();
       delta = frame - lastFrame;
       lastFrame = frame;
-
+      // Update
+      physics.update(delta);
       camera.update(delta);
       window->update();
+      game.update();
+      // Render
       renderer.renderBefore();
       terrain.render();
       if (showGrid)
         renderer.render(grid, gridMaterial, gridTransform);
+      game.render();
       house->render();
       physics.render();
       ui.render();
+      //
       window->swapBuffers();
       window->pollEvents();
     }

@@ -102,8 +102,8 @@ Physics::~Physics() {
   delete handle;
 }
 
-void Physics::createPhysicsBox(PhysicsBox &box, glm::vec2 size) {
-  btVector3 bsize(size.x /2.0, 0.2, size.y/2.0);
+void Physics::createPhysicsBox(PhysicsBox &box, glm::vec3 size) {
+  btVector3 bsize(size.x / 2.0, size.y / 2.0, size.z/ 2.0);
   btCollisionShape* shape = new btBoxShape(bsize);
   btTransform transform;
 
@@ -115,6 +115,7 @@ void Physics::createPhysicsBox(PhysicsBox &box, glm::vec2 size) {
   body->setAngularFactor(btVector3(0.0f, 0.0f, 0.0f));
   body->setFriction(0.0);
   body->setActivationState(DISABLE_DEACTIVATION);
+  body->setUserPointer(this);
   handle->dynamicsWorld.addRigidBody(body);
   box.handle = static_cast<void*>(body);
 }
@@ -125,17 +126,43 @@ void Physics::load() {
   App::instance().getUI().addDebugBoolean("Debug physics", &debug);
 }
 
+std::pair<PhysicsBox*, glm::vec3> Physics::raycast(glm::vec3 point, glm::vec3 direction) {
+  glm::vec3 to = point + direction * 1000.0f;
+  btCollisionWorld::ClosestRayResultCallback RayCallback(
+    btVector3(point.x, point.y, point.z),
+    btVector3(to.x, to.y, to.z)
+  );
+  handle->dynamicsWorld.rayTest(
+    btVector3(point.x, point.y, point.z),
+    btVector3(to.x, to.y, to.z),
+    RayCallback
+  );
+  if(RayCallback.hasHit()) {
+    PhysicsBox* pb = (PhysicsBox*)RayCallback.m_collisionObject->getUserPointer();
+    if (!pb)
+      return {nullptr, {0.0, 0.0, 0.0}};
+    auto p = RayCallback.m_hitPointWorld;
+    glm::vec3 point = { p.getX(), p.getY(), p.getZ() };
+    return {pb, point};
+  }
+  return {nullptr, {0.0, 0.0, 0.0}};
+}
+
 void Physics::render() {
   handle->dynamicsWorld.setDebugDrawer(debug ? &handle->debugDraw : nullptr);
+  if (debug)
+    handle->debugDraw.render();
+}
 
+void Physics::shutdown() {}
+
+void Physics::update(float delta) {
+  handle->dynamicsWorld.stepSimulation(1/60.f);
   if (debug) {
     handle->debugDraw.begin();
     handle->dynamicsWorld.debugDrawWorld();
     handle->debugDraw.end();
-    handle->debugDraw.render();
   }
 }
-
-void Physics::shutdown() {}
 
 }

@@ -39,10 +39,13 @@ class Game {
     std::vector<std::unique_ptr<Building>>& getBuildings() { return buildings; }
     std::string getName() { return name; }
     void load();
+    void render();
+    void update();
   private:
     std::string name;
     std::vector<std::unique_ptr<Building>> buildings;
     void loadInfos(nlohmann::json &json);
+    Building *current;
 };
 
 }

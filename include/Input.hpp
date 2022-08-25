@@ -1,5 +1,6 @@
 #pragma once
 
+#include <glm/glm.hpp>
 #include <System.hpp>
 
 namespace ej {
@@ -13,6 +14,7 @@ class Input : public System {
       Left, Right, Up, Down,
       Add, Subtract,
     };
+    static glm::vec2 getMousePosition();
     static bool keyDown(Key key);
     void load();
     void shutdown() {};

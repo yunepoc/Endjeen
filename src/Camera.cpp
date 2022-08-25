@@ -38,6 +38,30 @@ void Camera::receive(SystemMsg& msg) {
   transform.translate(forward);
 }
 
+std::pair<glm::vec3, glm::vec3> Camera::screenToRay(glm::uvec2 coordinates) {
+  unsigned x = coordinates.x;
+  unsigned y = coordinates.y;
+  auto size = App::instance().getWindow().getSize();
+
+  auto clickx = ((double)(x)/(double)(size.x) - 0.5f) * 2.0f;
+  auto clicky = ((double)(size.y-y)/(double)(size.y) - 0.5f) * 2.0f;
+
+  glm::vec4 rayStart(clickx,clicky,-1.0f,1.0f);
+  glm::vec4 rayEnd(clickx,clicky, 0.0f,1.0f);
+
+  glm::mat4 view = getViewMatrix();
+  glm::mat4 projection = getProjectionMatrix();
+
+  glm::mat4 M = glm::inverse(projection * view);
+  glm::vec4 sta = M * rayStart; sta /= sta.w;
+  glm::vec4 end = M * rayEnd;   end /= end.w;
+
+  glm::vec3 dir(end - sta);
+  dir = glm::normalize(dir);
+
+  return {sta, dir};
+}
+
 void Camera::update(float delta) {
   // Translation
   float speed = 8 * delta;
