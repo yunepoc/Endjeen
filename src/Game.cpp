@@ -66,18 +66,42 @@ void Game::load() {
       buildings.push_back(std::move(building));
     }
   //
+  terrain.load();
+  //
   SystemMsg msg("game","loaded");
   System::send(msg);
+}
 
-  current = createBuilding("house");
+void Game::receive(SystemMsg& msg) {
+  if (msg.getSystem() != "UI" && msg.getMsg() != "build")
+    return;
+  assert(msg.numString() == 1);
+  if (current)
+    delete current;
+  current = createBuilding(msg.getString(0));
   current->setTilePosition({0, 0});
 }
 
 void Game::render() {
+  terrain.render();
+  for (auto building: placed)
+    building->render();
+  if (!current)
+    return;
   current->render();
 }
 
+void Game::shutdown() {
+  if (current)
+    delete current;
+  for (auto building: placed)
+    delete building;
+}
+
 void Game::update() {
+  App::instance().getUI().setDebugLabel("# buildings", std::to_string(placed.size()));
+  if (!current)
+    return;
   glm::vec2 mousePos = Input::getMousePosition();
   auto ray = App::instance().getCamera().screenToRay(mousePos);
   glm::vec3 start = ray.first;
@@ -88,6 +112,16 @@ void Game::update() {
     int tilex = std::floor(res.second.x);
     int tiley = std::floor(res.second.z*-1);
     current->setTilePosition({tilex, tiley});
+  }
+  if (Input::mouseRightDown())
+    current = nullptr;
+  else if (Input::mouseLeftDown()) {
+    placed.push_back(current);
+    if (Input::keyDown(Input::Key::ShiftLeft)) {
+      current = createBuilding(current->getName());
+    }
+    else
+      current = nullptr;
   }
 }
 

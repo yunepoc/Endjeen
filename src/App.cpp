@@ -1,7 +1,6 @@
 #include <App.hpp>
 
 #include <Material.hpp>
-#include <Terrain.hpp>
 #include <Timer.hpp>
 #include <Transform.hpp>
 
@@ -14,15 +13,13 @@ namespace ej {
     ui.load();
     renderer.load();
     physics.load();
-    game.load();
     window->load();
     input.load();
+    game.load();
     ui.addDebugBoolean("Show grid", &showGrid);
   }
 
   void App::run() {
-
-    Terrain terrain;
 
     // Grid
     ResRenderable &grid = resourceMgr.get<ResRenderable>("plane1000x1000.std");
@@ -30,10 +27,6 @@ namespace ej {
     Transform gridTransform;
     gridTransform.setPosition({-500.0f, 0.01f, 500.0f});
     Material gridMaterial(gridShader);
-
-    // Test building
-    Building *house = game.createBuilding("house");
-    house->setTilePosition({8, 10});
 
     while (window->isOpen()) {
       // Compute delta
@@ -47,18 +40,17 @@ namespace ej {
       game.update();
       // Render
       renderer.renderBefore();
-      terrain.render();
       if (showGrid)
         renderer.render(grid, gridMaterial, gridTransform);
       game.render();
-      house->render();
       physics.render();
       ui.render();
       //
       window->swapBuffers();
       window->pollEvents();
     }
-    delete house;
+    // Remove all game content before shutting down the systems
+    game.shutdown();
   }
 
   void App::stop() {

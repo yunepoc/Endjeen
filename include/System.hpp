@@ -9,14 +9,18 @@ class SystemMsg {
   public:
     SystemMsg(std::string system, std::string msg) : system(system), msg(msg) {};
     void addInt(int i);
+    void addString(std::string s);
     int getInt(unsigned index);
+    std::string getString(unsigned index);
     std::string getMsg();
     std::string getSystem();
     unsigned numInt();
+    unsigned numString();
   private:
     std::string system;
     std::string msg;
     std::vector<int> ints;
+    std::vector<std::string> strings;
 };
 
 class System {

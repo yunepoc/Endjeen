@@ -73,6 +73,31 @@ void PhysicsDebugDraw::render() {
 
 // -----------------------------------------------------------------------------
 
+struct Physics::Handle {
+  Handle();
+  btDefaultCollisionConfiguration collisionConfiguration;
+  btCollisionDispatcher dispatcher;
+  btDbvtBroadphase broadphase;
+  btSequentialImpulseConstraintSolver solver;
+  btDiscreteDynamicsWorld dynamicsWorld;
+  PhysicsDebugDraw debugDraw;
+};
+
+// -----------------------------------------------------------------------------
+
+PhysicsBox::~PhysicsBox() {
+  // Id the physics box is not initialized, there is nothing to destroy
+  if (!handle)
+    return;
+  btRigidBody* body = static_cast<btRigidBody*>(handle);
+  App::instance().getPhysics().handle->dynamicsWorld.removeRigidBody(body);
+  btCollisionShape* shape = body->getCollisionShape();
+  btMotionState* motionState = body->getMotionState();
+  delete motionState;
+  delete shape;
+  delete body;
+}
+
 void PhysicsBox::setPosition(glm::vec3 position) {
   btRigidBody* body = static_cast<btRigidBody*>(handle);
   btTransform transform;
@@ -84,16 +109,6 @@ void PhysicsBox::setPosition(glm::vec3 position) {
 }
 
 // -----------------------------------------------------------------------------
-
-struct Physics::Handle {
-  Handle();
-  btDefaultCollisionConfiguration collisionConfiguration;
-  btCollisionDispatcher dispatcher;
-  btDbvtBroadphase broadphase;
-  btSequentialImpulseConstraintSolver solver;
-  btDiscreteDynamicsWorld dynamicsWorld;
-  PhysicsDebugDraw debugDraw;
-};
 
 Physics::Handle::Handle():
   dispatcher(&collisionConfiguration), dynamicsWorld(&dispatcher, &broadphase, &solver, &collisionConfiguration) {}

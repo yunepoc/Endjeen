@@ -10,7 +10,7 @@ class ResRenderable;
 class ResShader;
 class Terrain {
   public:
-    Terrain();
+    void load();
     void render();
   private:
     ResRenderable *renderableGround;

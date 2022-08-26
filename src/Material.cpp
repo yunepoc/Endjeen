@@ -5,14 +5,12 @@
 
 namespace ej {
 
-Material::Material(): shader(&App::instance().getResourceMgr().get<ResShader>("default.shader")) {
-}
-
 void Material::addTexture(ResTexture &texture) {
   textures.push_back(&texture);
 }
 
 ResShader& Material::getShader() {
+  assert(shader != nullptr);
   return *shader;
 }
 

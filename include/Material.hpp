@@ -8,7 +8,7 @@ class ResShader;
 class ResTexture;
 class Material {
   public:
-    Material();
+    Material() {}
     Material(ResShader &shader): shader(&shader) {}
     Material(ResShader &shader, std::vector<ResTexture*> textures): shader(&shader), textures(textures) {}
     void addTexture(ResTexture &texture);

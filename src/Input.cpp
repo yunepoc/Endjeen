@@ -18,6 +18,7 @@ static int keyToGLFWKey(Input::Key key) {
     case Input::Key::Down: return GLFW_KEY_DOWN;
     case Input::Key::Add: return GLFW_KEY_KP_ADD;
     case Input::Key::Subtract: return GLFW_KEY_KP_SUBTRACT;
+    case Input::Key::ShiftLeft: return GLFW_KEY_LEFT_SHIFT;
     default: ERROR("Input: Unknown key");
   }
 }
@@ -34,6 +35,20 @@ bool Input::keyDown(Key key) {
   GLFWwindow* window = static_cast<GLFWwindow*>(handle);
   int GLFWKey = keyToGLFWKey(key);
   return glfwGetKey(window, GLFWKey) == GLFW_PRESS;
+}
+
+bool Input::mouseLeftDown() {
+  void* handle = App::instance().getWindow().getHandle();
+  GLFWwindow* window = static_cast<GLFWwindow*>(handle);
+  int state = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT);
+  return state == GLFW_PRESS;
+}
+
+bool Input::mouseRightDown() {
+  void* handle = App::instance().getWindow().getHandle();
+  GLFWwindow* window = static_cast<GLFWwindow*>(handle);
+  int state = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT);
+  return state == GLFW_PRESS;
 }
 
 static void scrollCallback(GLFWwindow* window, double x, double y) {

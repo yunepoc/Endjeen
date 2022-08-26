@@ -9,12 +9,14 @@ class Physics;
 class PhysicsBox {
   friend Physics;
   public:
+    ~PhysicsBox();
     void setPosition(glm::vec3 position);
   private:
     void* handle = nullptr;
 };
 
 class Physics: public System {
+  friend PhysicsBox;
   public:
     ~Physics();
     void createPhysicsBox(PhysicsBox &box, glm::vec3 size);

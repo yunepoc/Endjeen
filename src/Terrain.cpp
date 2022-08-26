@@ -6,7 +6,7 @@
 
 namespace ej {
 
-Terrain::Terrain() {
+void Terrain::load() {
   renderableGround = new ResRenderable();
   ResourceManager& resourceMgr = App::instance().getResourceMgr();
 

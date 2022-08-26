@@ -13,9 +13,12 @@ class Input : public System {
       A, D, S, W,
       Left, Right, Up, Down,
       Add, Subtract,
+      ShiftLeft,
     };
     static glm::vec2 getMousePosition();
     static bool keyDown(Key key);
+    static bool mouseLeftDown();
+    static bool mouseRightDown();
     void load();
     void shutdown() {};
 };
