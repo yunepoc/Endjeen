@@ -1,8 +1,5 @@
 #pragma once
 
-#include <filesystem>
-#include <Game/Placing.hpp>
-#include <Game/Terrain.hpp>
 #include <glm/glm.hpp>
 #include <Material.hpp>
 #include <memory>

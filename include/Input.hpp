@@ -5,7 +5,6 @@
 
 namespace ej {
 
-class Window;
 class Input : public System {
   public:
     enum class Key {

@@ -7,7 +7,6 @@
 namespace ej {
 
 class ResRenderable;
-class ResShader;
 class Terrain {
   public:
     void load();

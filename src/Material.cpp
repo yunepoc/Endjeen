@@ -1,6 +1,5 @@
 #include <Material.hpp>
 
-#include <App.hpp>
 #include <cassert>
 
 namespace ej {

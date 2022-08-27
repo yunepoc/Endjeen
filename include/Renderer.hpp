@@ -1,12 +1,14 @@
 #pragma once
 
-#include <Resource.hpp>
 #include <System.hpp>
 #include <vector>
 
 namespace ej {
 
 class Material;
+struct ResRenderable;
+struct ResShader;
+struct ResTexture;
 class Transform;
 class Renderer: public System {
   public:
