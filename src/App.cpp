@@ -10,11 +10,11 @@ namespace ej {
 
     resourceMgr.init(root);
     // The order of the loads is important here
-    ui.load();
     renderer.load();
     physics.load();
     window->load();
     input.load();
+    ui.load();
     gameContent.load();
     game.load();
     ui.addDebugBoolean("Show grid", &showGrid);

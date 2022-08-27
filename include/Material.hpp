@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+#include <unordered_map>
 #include <vector>
 
 namespace ej {
@@ -15,10 +17,13 @@ class Material {
     ResShader& getShader();
     ResTexture& getTexture(unsigned index);
     unsigned getTextureCount();
+    std::unordered_map<std::string, bool> getUniformsBool() { return uniformsBool; }
     void setShader(ResShader &shader);
+    void setUniformBool(std::string name, bool value);
   private:
     ResShader *shader = nullptr;
     std::vector<ResTexture*> textures;
+    std::unordered_map<std::string, bool> uniformsBool;
 };
 
 }

@@ -16,10 +16,15 @@ void Game::load() {
 }
 
 void Game::receive(SystemMsg& msg) {
-  if (msg.getSystem() != "UI" && msg.getMsg() != "build")
-    return;
-  assert(msg.numString() == 1);
-  placing.create(msg.getString(0));
+  if (msg.getSystem() == "UI" && msg.getMsg() == "build") {
+    assert(msg.numString() == 1);
+    placing.create(msg.getString(0));
+  } else if (msg.getSystem() == "input" && msg.getMsg() == "click") {
+    placing.click();
+  } else if (msg.getSystem() == "input" && msg.getMsg() == "key") {
+    if (msg.getInt(0) == Input::Key::R)
+      placing.rotate();
+  }
 }
 
 void Game::render() {

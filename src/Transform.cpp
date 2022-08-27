@@ -32,6 +32,12 @@ glm::vec3 Transform::getPosition() {
   return position;
 }
 
+void Transform::rotate(glm::vec3 rotation) {
+  glm::vec3 rotrads = glm::vec3(glm::radians(rotation.x), glm::radians(rotation.y), glm::radians(rotation.z));
+  auto quat = glm::quat(rotrads);
+  this->rotation = quat * this->rotation;
+}
+
 void Transform::translate(glm::vec3 translation) {
   position += translation;
 }

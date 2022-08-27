@@ -5,9 +5,15 @@
 
 namespace ej {
 
+Building::Building() {
+  material.setUniformBool("invalid", false);
+  material.setUniformBool("valid", false);
+}
+
 Building* Building::create() {
   Building* instance = new Building(*this);
-  App::instance().getPhysics().createPhysicsBox(instance->box, {size.x, 0, size.y});
+  App::instance().getPhysics().createPhysicsBox(instance->box, {size.x - 0.1, 0, size.y - 0.1});
+  instance->box.setUserData(this);
   instance->isTemplate = false;
   return instance;
 }
@@ -18,6 +24,15 @@ void Building::render() {
     renderer.render(renderable, material, transform);
   }
 }
+
+void Building::setInvalid(bool invalid) {
+  material.setUniformBool("invalid", invalid);
+}
+
+void Building::setValid(bool valid) {
+  material.setUniformBool("valid", valid);
+}
+
 
 void Building::setTilePosition(glm::vec2 tile) {
   assert(!isTemplate && "Cannot set position of a template building");
@@ -32,7 +47,7 @@ void Building::load(nlohmann::json &json) {
   size = { json["size"][0], json["size"][1] };
   renderable = App::instance().getResourceMgr().get<ResRenderable>(json["model"]);
   ResTexture &texture = App::instance().getResourceMgr().get<ResTexture>(json["texture"]);
-  ResShader &shader = App::instance().getResourceMgr().get<ResShader>("default.shader");
+  ResShader &shader = App::instance().getResourceMgr().get<ResShader>("building.shader");
   material = Material(shader, {&texture});
   icon = App::instance().getResourceMgr().get<ResTexture>(json["icon512"]);
 }

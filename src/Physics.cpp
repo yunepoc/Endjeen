@@ -108,6 +108,14 @@ void PhysicsBox::setPosition(glm::vec3 position) {
   body->getMotionState()->setWorldTransform(transform);
 }
 
+void* PhysicsBox::getUserData() {
+  return userData;
+}
+
+void PhysicsBox::setUserData(void* data) {
+  userData = data;
+}
+
 // -----------------------------------------------------------------------------
 
 Physics::Handle::Handle():
@@ -130,9 +138,28 @@ void Physics::createPhysicsBox(PhysicsBox &box, glm::vec3 size) {
   body->setAngularFactor(btVector3(0.0f, 0.0f, 0.0f));
   body->setFriction(0.0);
   body->setActivationState(DISABLE_DEACTIVATION);
-  body->setUserPointer(this);
-  handle->dynamicsWorld.addRigidBody(body);
+  body->setUserPointer(&box);
+  handle->dynamicsWorld.addRigidBody(body, 1, 1);
   box.handle = static_cast<void*>(body);
+}
+
+std::vector<PhysicsBox*> Physics::currentColliders(PhysicsBox &box) {
+  std::vector<PhysicsBox*> colliders;
+  int numManifolds = handle->dispatcher.getNumManifolds();
+  for (int i=0; i<numManifolds; i++) {
+    btPersistentManifold* contactManifold = handle->dynamicsWorld.getDispatcher()->getManifoldByIndexInternal(i);
+    if (contactManifold->getNumContacts() == 0)
+      continue;
+    btCollisionObject* obA = const_cast<btCollisionObject*>(contactManifold->getBody0());
+    btCollisionObject* obB = const_cast<btCollisionObject*>(contactManifold->getBody1());
+    PhysicsBox* pbA = static_cast<PhysicsBox*>(obA->getUserPointer());
+    PhysicsBox* pbB = static_cast<PhysicsBox*>(obB->getUserPointer());
+    if (pbA == &box)
+      colliders.push_back(pbB);
+    else if (pbB == &box)
+      colliders.push_back(pbA);
+  }
+  return colliders;
 }
 
 void Physics::load() {

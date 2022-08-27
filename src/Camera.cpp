@@ -26,7 +26,7 @@ glm::mat4 Camera::getViewMatrix() {
 }
 
 void Camera::receive(SystemMsg& msg) {
-  if (msg.getSystem() != "input" && msg.getMsg() != "scroll")
+  if (msg.getSystem() != "input" || msg.getMsg() != "scroll")
     return;
   // Zoom in/out
   int x = msg.getInt(0);

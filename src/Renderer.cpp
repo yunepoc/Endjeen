@@ -172,6 +172,10 @@ void Renderer::render(ResRenderable &renderable, Material &material, Transform& 
     glActiveTexture(GL_TEXTURE0+i);
     glBindTexture(GL_TEXTURE_2D, material.getTexture(i).handle);
   }
+  for (auto &p: material.getUniformsBool()) {
+    loc = glGetUniformLocation(shader.handle, p.first.c_str());
+    glUniform1i(loc, p.second);
+  }
 
   // Set other uniforms
   loc = glGetUniformLocation(shader.handle, "elapsedTime");

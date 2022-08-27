@@ -13,6 +13,7 @@ class UI: public System {
     void load();
     void render();
     void shutdown() {};
+    static bool wantsToCaptureMouse();
   private:
     void debugUI();
     void gameUI();

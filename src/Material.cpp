@@ -26,4 +26,8 @@ void Material::setShader(ResShader &shader) {
   this->shader = &shader;
 }
 
+void Material::setUniformBool(std::string name, bool value) {
+  uniformsBool[name] = value;
+}
+
 }
