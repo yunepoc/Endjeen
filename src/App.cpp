@@ -15,6 +15,7 @@ namespace ej {
     physics.load();
     window->load();
     input.load();
+    gameContent.load();
     game.load();
     ui.addDebugBoolean("Show grid", &showGrid);
   }
@@ -49,8 +50,6 @@ namespace ej {
       window->swapBuffers();
       window->pollEvents();
     }
-    // Remove all game content before shutting down the systems
-    game.shutdown();
   }
 
   void App::stop() {

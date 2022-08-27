@@ -52,7 +52,7 @@ void Window::update() {
 
 void Window::receive(SystemMsg& msg) {
   if (msg.getSystem() == "game" && msg.getMsg() == "loaded") {
-    std::string name = App::instance().getGame().getName();
+    std::string name = App::instance().getGameContent().getName();
     glfwSetWindowTitle(WIN, name.c_str());
   }
 }

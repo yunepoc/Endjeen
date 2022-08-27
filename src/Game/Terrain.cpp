@@ -1,4 +1,4 @@
-#include <Terrain.hpp>
+#include <Game/Terrain.hpp>
 
 #include <App.hpp>
 #include <Resource.hpp>

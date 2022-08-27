@@ -1,7 +1,8 @@
 #pragma once
 
 #include <Camera.hpp>
-#include <Game.hpp>
+#include <Game/Game.hpp>
+#include <Game/GameContent.hpp>
 #include <Input.hpp>
 #include <memory>
 #include <Physics.hpp>
@@ -24,7 +25,7 @@ class App {
     }
 
     Camera& getCamera() { return camera; }
-    Game& getGame() { return game; }
+    GameContent& getGameContent() { return gameContent; }
     Physics& getPhysics() { return physics; }
     Renderer& getRenderer() { return renderer; }
     UI& getUI() { return ui; }
@@ -36,6 +37,7 @@ class App {
   private:
     App() {};
     Game game;
+    GameContent gameContent;
     Input input;
     Physics physics;
     ResourceManager resourceMgr;

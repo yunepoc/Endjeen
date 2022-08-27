@@ -1,21 +1,22 @@
 #pragma once
 
 #include <filesystem>
+#include <Game/Placing.hpp>
+#include <Game/Terrain.hpp>
 #include <glm/glm.hpp>
 #include <Material.hpp>
 #include <memory>
 #include <nlohmann/json.hpp>
 #include <Physics.hpp>
 #include <Resource.hpp>
-#include <Terrain.hpp>
 #include <Transform.hpp>
 #include <vector>
 
 namespace ej {
 
-class Game;
+class GameContent;
 class Building {
-  friend Game;
+  friend GameContent;
   public:
     Building* create();
     ResTexture& getIcon() { return icon; }
@@ -34,24 +35,16 @@ class Building {
     void load(nlohmann::json &json);
 };
 
-class Game : public System {
+class GameContent {
   public:
     Building *createBuilding(std::string name);
     std::vector<std::unique_ptr<Building>>& getBuildings() { return buildings; }
     std::string getName() { return name; }
     void load();
-    void render();
-    void shutdown();
-    void update();
   private:
     std::string name;
     std::vector<std::unique_ptr<Building>> buildings;
     void loadInfos(nlohmann::json &json);
-    void receive(SystemMsg& msg);
-    // Logic TODO: move
-    Building *current;
-    Terrain terrain;
-    std::vector<Building*> placed;
 };
 
 }
