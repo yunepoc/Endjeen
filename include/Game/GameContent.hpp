@@ -2,6 +2,7 @@
 
 #include <glm/glm.hpp>
 #include <Material.hpp>
+#include <map>
 #include <memory>
 #include <nlohmann/json.hpp>
 #include <Physics.hpp>
@@ -51,12 +52,17 @@ class GameContent {
   public:
     Building *createBuilding(std::string name);
     std::vector<std::unique_ptr<Building>>& getBuildings() { return buildings; }
+    std::map<std::string, unsigned>& getResources() { return resources; }
+    void resourceAdd(std::string name, unsigned value);
+    bool resourceHas(std::string name);
+    void resourceSub(std::string name, unsigned value);
     std::string getName() { return name; }
     void load();
   private:
     std::string name;
     std::vector<std::unique_ptr<Building>> buildings;
     void loadInfos(nlohmann::json &json);
+    std::map<std::string, unsigned> resources;
 };
 
 }

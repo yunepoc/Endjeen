@@ -20,12 +20,29 @@ void UI::setDebugLabel(std::string name, std::string value) {
 }
 
 void UI::gameUI() {
+  glm::uvec2 wsize = App::instance().getWindow().getSize();
+  // Resources
   ImGui::SetNextWindowPos(ImVec2(0,0));
+  ImGui::SetNextWindowSize(ImVec2(wsize.x,70));
+  ImGui::Begin("Resources", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize);
+  auto& resources = App::instance().getGameContent().getResources();
+  ImGui::Text(" | ");
+  for (auto& resource: resources) {
+    ImGui::SameLine();
+    std::string label = resource.first + ": ";
+    label += std::to_string(resource.second);
+    label += " | ";
+    ImGui::Text(label.c_str());
+  }
+  ImGui::End();
+  // Build menu
+  ImGui::SetNextWindowPos(ImVec2(0,wsize.y - 96 - 20));
   ImGui::SetNextWindowSize(ImVec2(0,0));
   ImGui::Begin("Game", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize);
   auto& buildings = App::instance().getGameContent().getBuildings();
   for (auto& building: buildings) {
     bool b = ImGui::ImageButton(building->getName().c_str(),(void*)(intptr_t)building->getIcon().handle, {96,96});
+    ImGui::SameLine();
     if (b) {
       SystemMsg msg("UI", "build");
       msg.addString(building->getName());

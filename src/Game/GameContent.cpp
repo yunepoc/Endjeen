@@ -86,6 +86,24 @@ void GameContent::load() {
 
 void GameContent::loadInfos(nlohmann::json &json) {
   name = json["name"];
+  for (nlohmann::json& res: json["resources"]) {
+    std::string r = res.get<std::string>();
+    resources[r] = 0;
+  }
+}
+
+void GameContent::resourceAdd(std::string name, unsigned value) {
+  assert(resources.count(name) == 1 && "Invalid resource");
+  resources[name] += value;
+}
+
+bool GameContent::resourceHas(std::string name) {
+  return resources.count(name) == 1;
+}
+
+void GameContent::resourceSub(std::string name, unsigned value) {
+  assert(resources.count(name) == 1 && "Invalid resource");
+  resources[name] -= value;
 }
 
 }
