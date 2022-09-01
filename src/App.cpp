@@ -1,6 +1,7 @@
 #include <App.hpp>
 
 #include <Material.hpp>
+#include <Script.hpp>
 #include <Timer.hpp>
 #include <Transform.hpp>
 
@@ -29,6 +30,9 @@ namespace ej {
     gridTransform.setPosition({-500.0f, 0.01f, 500.0f});
     Material gridMaterial(gridShader);
 
+    ResScript &script = resourceMgr.get<ResScript>("test.js");
+    Script::load(script);
+
     while (window->isOpen()) {
       // Compute delta
       float frame = Timer::getTime();
@@ -39,6 +43,7 @@ namespace ej {
       camera.update(delta);
       window->update();
       game.update();
+      Script::update(script, delta);
       // Render
       renderer.renderBefore();
       if (showGrid)

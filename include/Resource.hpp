@@ -20,6 +20,12 @@ struct ResRenderable: public Resource {
   unsigned int indiceCount;
 };
 
+struct ResScript: public Resource {
+  void load(std::string root, std::string key);
+  void* handle;
+  std::string source;
+};
+
 struct ResShader: public Resource {
   void load(std::string root, std::string key);
   unsigned int handle;

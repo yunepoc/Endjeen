@@ -8,6 +8,7 @@ file(
   main.cpp
   src/*.cpp
   external/*.cpp
+  external/*.c
 )
 
 set(CMAKE_CXX_STANDARD 20)

@@ -1,14 +1,15 @@
 #include <Resource.hpp>
 
+#include <App.hpp>
 #include <assimp/Importer.hpp>
 #include <assimp/postprocess.h>
 #include <assimp/scene.h>
 #include <Debug.hpp>
 #include <filesystem>
 #include <fstream>
-#include <App.hpp>
 #include <regex>
 #include <Renderer.hpp>
+#include <Script.hpp>
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image/stb_image.h>
 
@@ -141,6 +142,20 @@ void ResRenderable::load(std::string root, std::string key) {
   std::vector<unsigned> indices;
   processMeshNode(scene->mRootNode, scene, data, indices);
   Renderer::createRenderable(data, indices, *this);
+}
+
+void ResScript::load(std::string root, std::string key) {
+  std::string path = root + "/scripts/" + key;
+  if (!std::filesystem::exists(path)) {
+    WARN("Cannot find script \"" << path << "\"");
+    // TODO: we could fallback to a default script here
+    handle = nullptr;
+    return;
+  }
+  std::ifstream f(path);
+  std::string src((std::istreambuf_iterator<char>(f)),
+                   std::istreambuf_iterator<char>());
+  Script::createScript(src, *this);
 }
 
 void ResShader::load(std::string root, std::string key) {
