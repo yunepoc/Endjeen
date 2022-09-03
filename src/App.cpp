@@ -33,7 +33,7 @@ namespace ej {
     ResScript &script = resourceMgr.get<ResScript>("test.js");
     Script::load(script);
 
-    while (window->isOpen()) {
+    while (window->isOpen() && !quitRequest) {
       // Compute delta
       float frame = Timer::getTime();
       delta = frame - lastFrame;
@@ -59,5 +59,10 @@ namespace ej {
 
   void App::stop() {
     renderer.shutdown();
+  }
+
+  void App::receive(SystemMsg& msg) {
+    if (msg.getSystem() == "UI" && msg.getMsg() == "quit")
+      quitRequest = true;
   }
 }

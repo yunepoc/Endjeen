@@ -13,7 +13,7 @@
 
 namespace ej {
 
-class App {
+class App : public System {
   public:
     App(const App&) = delete;
     App& operator=(const App &) = delete;
@@ -32,8 +32,10 @@ class App {
     Window& getWindow() { return *window; }
     ResourceManager& getResourceMgr() { return resourceMgr; }
     void init(std::string root);
+    void load() {};
     void run();
     void stop();
+    void shutdown() {};
   private:
     App() {};
     Game game;
@@ -50,6 +52,9 @@ class App {
     float delta = 0.0;
 
     bool showGrid = false;
+
+    void receive(SystemMsg& msg);
+    bool quitRequest = false;
 };
 
 }

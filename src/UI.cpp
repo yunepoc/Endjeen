@@ -34,6 +34,12 @@ void UI::gameUI() {
     label += " | ";
     ImGui::Text(label.c_str());
   }
+  ImGui::SameLine();
+  ImGui::SetCursorPosX(wsize.x - 200 - 10);
+  if (ImGui::Button("Quit", {200, 50})) {
+    SystemMsg msg("UI", "quit");
+    System::send(msg);
+  }
   ImGui::End();
   // Build menu
   ImGui::SetNextWindowPos(ImVec2(0,wsize.y - 96 - 20));
