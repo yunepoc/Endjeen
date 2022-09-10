@@ -8,7 +8,26 @@ namespace ej {
 Game::Game(): placing(*this) {}
 
 void Game::addBuilding(std::unique_ptr<Building> building) {
+  building->load();
   buildings.push_back(std::move(building));
+}
+
+void Game::addWorker(std::unique_ptr<Worker> worker) {
+  workers.push_back(std::move(worker));
+}
+
+Worker* Game::getAvailableWorker(std::string name) {
+  for (auto &worker: workers) {
+    if (worker->getName() != name)
+      continue;
+    if (worker->isAvailable())
+      return &*worker;
+  }
+  Worker *worker = App::instance().getGameContent().createWorker(name);
+  worker->load();
+  std::unique_ptr<Worker> w(worker);
+  addWorker(std::move(w));
+  return worker;
 }
 
 void Game::load() {
@@ -31,12 +50,20 @@ void Game::render() {
   terrain.render();
   for (auto& building: buildings)
     building->render();
+  for (auto& worker: workers)
+    worker->render();
   placing.render();
 }
 
-void Game::update() {
-  App::instance().getUI().setDebugLabel("# buildings", std::to_string(buildings.size()));
+void Game::update(double delta) {
+  App::instance().getUI().setDebugLabel("Buildings", std::to_string(buildings.size()));
+  App::instance().getUI().setDebugLabel("Workers", std::to_string(workers.size()));
   placing.update();
+  for (auto& building: buildings)
+    building->update(delta);
+  for (auto& worker: workers) {
+    worker->update(delta);
+  }
 }
 
 }

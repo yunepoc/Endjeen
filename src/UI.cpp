@@ -70,7 +70,7 @@ void UI::debugUI() {
   ImGui::Text(("FPS: " + fps).c_str());
   // Labels
   for (auto &p: debugLabels)
-    ImGui::Text((p.first + ":" + p.second).c_str());
+    ImGui::Text((p.first + ": " + p.second).c_str());
   // Boolean debug values
   for (auto &p: debugBooleans)
     ImGui::Checkbox(p.first.c_str(), p.second);

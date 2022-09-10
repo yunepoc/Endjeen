@@ -20,9 +20,9 @@ Window::Window(unsigned width, unsigned height) {
     ERROR("Cannot create window");
   GLFWwindow *window = glfwCreateWindow(width, height, "", NULL, NULL);
   // Set full screen windowed mode
-  auto monitor = glfwGetPrimaryMonitor();
-  const GLFWvidmode* mode = glfwGetVideoMode(monitor);
-  glfwSetWindowMonitor(window, monitor, 0, 0, mode->width, mode->height, mode->refreshRate);
+  //auto monitor = glfwGetPrimaryMonitor();
+  //const GLFWvidmode* mode = glfwGetVideoMode(monitor);
+  //glfwSetWindowMonitor(window, monitor, 0, 0, mode->width, mode->height, mode->refreshRate);
   if (!window)
     ERROR("Cannot create window");
   handle = static_cast<void*>(window);

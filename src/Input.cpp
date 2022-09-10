@@ -20,7 +20,10 @@ static int keyToGLFWKey(Input::Key key) {
     case Input::Key::Add: return GLFW_KEY_KP_ADD;
     case Input::Key::Subtract: return GLFW_KEY_KP_SUBTRACT;
     case Input::Key::ShiftLeft: return GLFW_KEY_LEFT_SHIFT;
-    default: ERROR("Input: Unknown key");
+    default: {
+      WARN("Input: Unknown key");
+      return GLFW_KEY_ESCAPE;
+    }
   }
 }
 

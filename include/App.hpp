@@ -25,6 +25,7 @@ class App : public System {
     }
 
     Camera& getCamera() { return camera; }
+    Game& getGame() { return game; }
     GameContent& getGameContent() { return gameContent; }
     Physics& getPhysics() { return physics; }
     Renderer& getRenderer() { return renderer; }

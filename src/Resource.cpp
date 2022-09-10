@@ -145,17 +145,29 @@ void ResRenderable::load(std::string root, std::string key) {
 }
 
 void ResScript::load(std::string root, std::string key) {
+  std::string libPath = root + "/scripts/" + "lib.js";
   std::string path = root + "/scripts/" + key;
+  // Load library
+  if (!std::filesystem::exists(libPath)) {
+    WARN("Cannot find library script \"" << libPath << "\"");
+    // TODO: we could fallback to a default script here
+    handle = nullptr;
+    return;
+  }
+  std::ifstream f(libPath);
+  std::string libSrc((std::istreambuf_iterator<char>(f)),
+                   std::istreambuf_iterator<char>());
+  // Load script
   if (!std::filesystem::exists(path)) {
     WARN("Cannot find script \"" << path << "\"");
     // TODO: we could fallback to a default script here
     handle = nullptr;
     return;
   }
-  std::ifstream f(path);
+  f = std::ifstream(path);
   std::string src((std::istreambuf_iterator<char>(f)),
                    std::istreambuf_iterator<char>());
-  Script::createScript(src, *this);
+  Script::createScript(libSrc + src, *this);
 }
 
 void ResShader::load(std::string root, std::string key) {
